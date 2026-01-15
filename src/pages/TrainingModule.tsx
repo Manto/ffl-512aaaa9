@@ -3,7 +3,6 @@ import { TrainingLayout } from '../components/training/TrainingLayout';
 import { ModuleHeader } from '../components/training/ModuleHeader';
 import { PermitResourcesScreen } from '../components/training/PermitResourcesScreen';
 import { TeamScreen } from '../components/training/TeamScreen';
-import { MissionBriefingScreen } from '../components/training/MissionBriefingScreen';
 import { SimulationScreen } from '../components/training/SimulationScreen';
 import { p101Module } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
@@ -17,22 +16,17 @@ export default function TrainingModule() {
   const handleNextBriefing = () => {
     if (briefingScreen === 'permit-resources') {
       setBriefingScreen('team');
-    } else if (briefingScreen === 'team') {
-      setBriefingScreen('mission-summary');
     }
   };
 
   const handlePreviousBriefing = () => {
     if (briefingScreen === 'team') {
       setBriefingScreen('permit-resources');
-    } else if (briefingScreen === 'mission-summary') {
-      setBriefingScreen('team');
     }
   };
 
   const handleStartSimulation = () => {
     setCurrentStep('simulation');
-    // In future: navigate to simulation screen
   };
 
   const renderBriefingContent = () => {
@@ -48,15 +42,7 @@ export default function TrainingModule() {
         return (
           <TeamScreen 
             module={module} 
-            onNext={handleNextBriefing}
-            onPrevious={handlePreviousBriefing}
-          />
-        );
-      case 'mission-summary':
-        return (
-          <MissionBriefingScreen 
-            module={module} 
-            onStartSimulation={handleStartSimulation}
+            onNext={handleStartSimulation}
             onPrevious={handlePreviousBriefing}
           />
         );
