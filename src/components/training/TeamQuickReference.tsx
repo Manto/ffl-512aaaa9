@@ -12,7 +12,7 @@ export function TeamQuickReference({ team }: TeamQuickReferenceProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl overflow-hidden shadow-sm">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/50 transition-colors"

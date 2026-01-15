@@ -84,7 +84,7 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
       {/* Simulation Intro Banner */}
-      <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
+      <div className="bg-card border border-primary/20 rounded-xl p-4 mb-4">
         <div className="flex items-start gap-3">
           <div className="p-2 bg-primary/20 rounded-lg">
             <Target className="w-5 h-5 text-primary" />
