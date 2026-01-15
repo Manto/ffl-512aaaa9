@@ -4,6 +4,7 @@ import { ModuleHeader } from '../components/training/ModuleHeader';
 import { PermitResourcesScreen } from '../components/training/PermitResourcesScreen';
 import { TeamScreen } from '../components/training/TeamScreen';
 import { MissionBriefingScreen } from '../components/training/MissionBriefingScreen';
+import { SimulationScreen } from '../components/training/SimulationScreen';
 import { p101Module } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
 
@@ -76,12 +77,7 @@ export default function TrainingModule() {
       case 'briefing':
         return renderBriefingContent();
       case 'simulation':
-        return (
-          <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Simulation</h3>
-            <p className="text-muted-foreground">Chat/roleplay interface would go here</p>
-          </div>
-        );
+        return <SimulationScreen module={module} />;
       case 'review':
         return (
           <div className="bg-card rounded-2xl shadow-lg p-8 text-center">

@@ -51,3 +51,20 @@ export interface TrainingModule {
 
 export type TrainingStep = 'intro' | 'briefing' | 'simulation' | 'review';
 export type BriefingScreen = 'permit-resources' | 'team' | 'mission-summary';
+
+export interface ChatMessage {
+  id: string;
+  speakerId: string;
+  speakerName: string;
+  speakerRole?: string;
+  speakerAvatar?: string;
+  content: string;
+  timestamp: Date;
+  isUser: boolean;
+}
+
+export interface SimulationState {
+  messages: ChatMessage[];
+  currentSceneId: string;
+  isComplete: boolean;
+}
