@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Target } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
-import { TeamQuickReference } from './TeamQuickReference';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
@@ -82,35 +81,34 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
-      {/* Simulation Intro Banner */}
-      <div className="bg-card border border-primary/20 rounded-xl p-4 mb-4">
-        <div className="flex items-start gap-3">
-          <div className="p-2 bg-primary/20 rounded-lg">
-            <Target className="w-5 h-5 text-primary" />
+    <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px] bg-card border border-border rounded-xl overflow-hidden">
+      {/* Unified Header with Team + Context */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-2">
+            {module.team.slice(0, 4).map((member) => (
+              <img
+                key={member.id}
+                src={`https://i.pravatar.cc/40?u=${member.id}`}
+                alt={member.name}
+                className="w-8 h-8 rounded-full border-2 border-background object-cover"
+              />
+            ))}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground mb-1">
-              SIMULATION: Start Work Verification
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              You'll roleplay a real conversation with your field team. 
-              Respond as you would on-site. Your choices will affect the outcome.
-            </p>
-            <p className="text-xs text-primary mt-2 font-medium">
-              Your Role: {module.userRole}
+            <h3 className="text-sm font-semibold text-foreground">Field Team Chat</h3>
+            <p className="text-xs text-muted-foreground">
+              {module.team.length} members • {module.userRole}
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Team Quick Reference */}
-      <div className="mb-4">
-        <TeamQuickReference team={module.team} />
+        <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full">
+          Simulation Active
+        </span>
       </div>
 
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto bg-card border border-border rounded-xl p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -130,24 +128,26 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
       </div>
 
       {/* Input Area */}
-      <div className="mt-4 flex gap-3">
-        <Textarea
-          ref={textareaRef}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your response..."
-          className="min-h-[52px] max-h-[120px] resize-none"
-          rows={1}
-        />
-        <Button 
-          onClick={handleSend} 
-          disabled={!inputValue.trim() || isTyping}
-          size="lg"
-          className="px-6"
-        >
-          <Send className="w-4 h-4" />
-        </Button>
+      <div className="p-3 border-t border-border bg-muted/20">
+        <div className="flex gap-3">
+          <Textarea
+            ref={textareaRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your response..."
+            className="min-h-[44px] max-h-[120px] resize-none bg-background"
+            rows={1}
+          />
+          <Button 
+            onClick={handleSend} 
+            disabled={!inputValue.trim() || isTyping}
+            size="lg"
+            className="px-4"
+          >
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
