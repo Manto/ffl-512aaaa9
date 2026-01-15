@@ -3,7 +3,7 @@ import { TrainingModule } from '../types/training';
 export const p101Module: TrainingModule = {
   id: 'p-101',
   title: 'P-101 Isobutane Pump Recommissioning',
-  description: 'Version 2 with 5-scene structure covering background setup, team greeting, document review, operation decision, and stop work outcomes.',
+  description: 'Scenario: The pump was isolated 6 months ago. The discharge blind is still in place. You are the Field Lead responsible for verifying conditions before work begins.',
   introVideoUrl: 'https://example.com/intro-video.mp4',
   userRole: 'Field Lead / Start Work Verifier',
   keyReminders: [
