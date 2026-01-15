@@ -4,6 +4,7 @@ import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/trai
 import { ChatMessage } from './ChatMessage';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
 interface SimulationScreenProps {
   module: TrainingModule;
@@ -87,12 +88,33 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
         <div className="flex items-center gap-3">
           <div className="flex -space-x-2">
             {module.team.slice(0, 4).map((member) => (
-              <img
-                key={member.id}
-                src={`https://i.pravatar.cc/40?u=${member.id}`}
-                alt={member.name}
-                className="w-8 h-8 rounded-full border-2 border-background object-cover"
-              />
+              <Popover key={member.id}>
+                <PopoverTrigger asChild>
+                  <button className="relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
+                    <img
+                      src={`https://i.pravatar.cc/40?u=${member.id}`}
+                      alt={member.name}
+                      className="w-8 h-8 rounded-full border-2 border-background object-cover hover:scale-110 transition-transform cursor-pointer"
+                    />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-3 bg-popover" align="start">
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={`https://i.pravatar.cc/64?u=${member.id}`}
+                      alt={member.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-foreground text-sm">{member.name}</h4>
+                      <p className="text-xs text-muted-foreground">{member.role}</p>
+                      {member.description && (
+                        <p className="text-xs text-muted-foreground mt-1">{member.description}</p>
+                      )}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             ))}
           </div>
           <div>
