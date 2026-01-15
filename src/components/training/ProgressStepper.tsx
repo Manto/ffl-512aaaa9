@@ -33,14 +33,14 @@ export function ProgressStepper({ currentStep, onStepClick }: ProgressStepperPro
                 disabled={!onStepClick}
                 className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
                   index < currentIndex
-                    ? 'bg-green-500 border-green-500'
+                    ? 'bg-muted border-muted-foreground/30'
                     : index === currentIndex
                     ? 'bg-primary border-primary ring-4 ring-primary/20'
                     : 'bg-card border-border'
                 } ${onStepClick ? 'cursor-pointer hover:scale-105' : 'cursor-default'}`}
               >
                 {index < currentIndex ? (
-                  <Check className="w-4 h-4 text-white" />
+                  <Check className="w-4 h-4 text-muted-foreground" />
                 ) : index === currentIndex ? (
                   <Circle className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
                 ) : (
@@ -69,7 +69,7 @@ export function ProgressStepper({ currentStep, onStepClick }: ProgressStepperPro
             {index < steps.length - 1 && (
               <div
                 className={`flex-1 h-0.5 -mt-10 transition-all ${
-                  index < currentIndex ? 'bg-green-500' : 'bg-border'
+                  index < currentIndex ? 'bg-muted-foreground/30' : 'bg-border'
                 }`}
               />
             )}
