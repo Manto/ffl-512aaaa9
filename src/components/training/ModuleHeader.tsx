@@ -1,4 +1,4 @@
-import { BookOpen } from 'lucide-react';
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import { TrainingModule, TrainingStep } from '../../types/training';
 import { ProgressStepper } from './ProgressStepper';
 
@@ -6,27 +6,38 @@ interface ModuleHeaderProps {
   module: TrainingModule;
   currentStep: TrainingStep;
   onStepClick?: (step: TrainingStep) => void;
+  onBack?: () => void;
 }
 
-export function ModuleHeader({ module, currentStep, onStepClick }: ModuleHeaderProps) {
+export function ModuleHeader({ module, currentStep, onStepClick, onBack }: ModuleHeaderProps) {
   return (
-    <>
+    <div className="bg-card rounded-xl shadow-sm px-4 py-2 mb-4">
+      <div className="flex items-center gap-3">
+        {/* Back button */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
+            aria-label="Back to Training Library"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+        )}
 
-      <div className="bg-card rounded-2xl shadow-lg p-4 mb-6">
-        <div className="flex items-start gap-3 mb-3">
-          <BookOpen className="w-5 h-5 text-foreground mt-0.5 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <h2 className="text-base font-semibold text-foreground mb-0.5">
-              {module.title}
-            </h2>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {module.description}
-            </p>
-          </div>
+        {/* Module title */}
+        <div className="flex items-center gap-2 min-w-0">
+          <BookOpen className="w-4 h-4 text-foreground flex-shrink-0" />
+          <span className="text-sm font-medium text-foreground truncate">
+            {module.title}
+          </span>
         </div>
 
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Inline stepper */}
         <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
       </div>
-    </>
+    </div>
   );
 }
