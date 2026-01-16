@@ -52,12 +52,6 @@ export function ReviewScreen({ onPrevious, onRestart }: ReviewScreenProps) {
             Previous
           </Button>
 
-          {/* Progress Dots */}
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary" />
-            <span className="w-6 h-1 rounded-full bg-primary" />
-          </div>
-
           <Button 
             onClick={onRestart}
             className="gap-2"
