@@ -1,18 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, FileText, Check } from 'lucide-react';
-import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
+import { Send, Target } from 'lucide-react';
+import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
+import { TeamQuickReference } from './TeamQuickReference';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
-import { ScrollArea } from '../ui/scroll-area';
-import { ProgressStepper } from './ProgressStepper';
 
 interface SimulationScreenProps {
   module: TrainingModule;
-  currentStep: TrainingStep;
-  onStepClick?: (step: TrainingStep) => void;
   onComplete?: () => void;
 }
 
@@ -30,9 +25,8 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
   };
 };
 
-export function SimulationScreen({ module, currentStep, onStepClick, onComplete }: SimulationScreenProps) {
+export function SimulationScreen({ module }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>([getInitialMessage(module)]);
-  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -88,104 +82,35 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px] bg-card border border-border rounded-xl overflow-hidden">
-      {/* Header with Breadcrumb + Team + Resources */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
-        {/* Left: Breadcrumb + Team avatars */}
-        <div className="flex items-center gap-4">
-          <ProgressStepper 
-            currentStep={currentStep} 
-            onStepClick={onStepClick}
-            variant="breadcrumb"
-          />
-          
-          <div className="h-5 w-px bg-border hidden sm:block" />
-          
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {module.team.slice(0, 3).map((member) => (
-                <Popover key={member.id}>
-                  <PopoverTrigger asChild>
-                    <button className="relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
-                      <img
-                        src={`https://i.pravatar.cc/40?u=${member.id}`}
-                        alt={member.name}
-                        className="w-7 h-7 rounded-full border-2 border-background object-cover hover:scale-110 transition-transform cursor-pointer"
-                      />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 p-3 bg-popover" align="start">
-                    <div className="flex items-start gap-3">
-                      <img
-                        src={`https://i.pravatar.cc/64?u=${member.id}`}
-                        alt={member.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-foreground text-sm">{member.name}</h4>
-                        <p className="text-xs text-muted-foreground">{member.role}</p>
-                        {member.description && (
-                          <p className="text-xs text-muted-foreground mt-1">{member.description}</p>
-                        )}
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              {module.team.length} in team
-            </span>
+    <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
+      {/* Simulation Intro Banner */}
+      <div className="bg-card border border-primary/20 rounded-xl p-4 mb-4">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-primary/20 rounded-lg">
+            <Target className="w-5 h-5 text-primary" />
           </div>
-        </div>
-
-        {/* Right: Resources + Done */}
-        <div className="flex items-center gap-2">
-          <Sheet open={resourcesOpen} onOpenChange={setResourcesOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
-                <FileText className="w-4 h-4" />
-                <span className="hidden sm:inline">Resources</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[350px] sm:w-[400px]">
-              <SheetHeader>
-                <SheetTitle>Scenario Resources</SheetTitle>
-              </SheetHeader>
-              <ScrollArea className="h-[calc(100vh-100px)] mt-4">
-                <div className="space-y-3 pr-4">
-                  {module.resources.map((resource, index) => (
-                    <button
-                      key={index}
-                      className="w-full text-left p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-start gap-3">
-                        <FileText className="w-5 h-5 text-primary mt-0.5" />
-                        <div>
-                          <h4 className="font-medium text-foreground text-sm">{resource.title}</h4>
-                          {resource.description && (
-                            <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </ScrollArea>
-            </SheetContent>
-          </Sheet>
-
-          {onComplete && (
-            <Button variant="default" size="sm" onClick={onComplete} className="gap-1.5">
-              <Check className="w-4 h-4" />
-              <span className="hidden sm:inline">Done</span>
-            </Button>
-          )}
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">
+              SIMULATION: Start Work Verification
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              You'll roleplay a real conversation with your field team. 
+              Respond as you would on-site. Your choices will affect the outcome.
+            </p>
+            <p className="text-xs text-primary mt-2 font-medium">
+              Your Role: {module.userRole}
+            </p>
+          </div>
         </div>
       </div>
 
+      {/* Team Quick Reference */}
+      <div className="mb-4">
+        <TeamQuickReference team={module.team} />
+      </div>
+
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto bg-card border border-border rounded-xl p-4 space-y-4">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -205,26 +130,24 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
       </div>
 
       {/* Input Area */}
-      <div className="p-3 border-t border-border bg-muted/20">
-        <div className="flex gap-3">
-          <Textarea
-            ref={textareaRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your response..."
-            className="min-h-[44px] max-h-[120px] resize-none bg-background"
-            rows={1}
-          />
-          <Button 
-            onClick={handleSend} 
-            disabled={!inputValue.trim() || isTyping}
-            size="lg"
-            className="px-4"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
+      <div className="mt-4 flex gap-3">
+        <Textarea
+          ref={textareaRef}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your response..."
+          className="min-h-[52px] max-h-[120px] resize-none"
+          rows={1}
+        />
+        <Button 
+          onClick={handleSend} 
+          disabled={!inputValue.trim() || isTyping}
+          size="lg"
+          className="px-6"
+        >
+          <Send className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );

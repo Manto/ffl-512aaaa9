@@ -1,88 +1,81 @@
-import { Check } from 'lucide-react';
+import { Check, Circle } from 'lucide-react';
 import { TrainingStep } from '../../types/training';
 
 interface Step {
   id: TrainingStep;
   label: string;
+  description: string;
 }
 
 const steps: Step[] = [
-  { id: 'intro', label: 'Intro' },
-  { id: 'briefing', label: 'Briefing' },
-  { id: 'simulation', label: 'Simulation' },
-  { id: 'review', label: 'Review' },
+  { id: 'intro', label: 'Intro', description: 'Introduction' },
+  { id: 'briefing', label: 'Briefing', description: 'Mission Details' },
+  { id: 'simulation', label: 'Simulation', description: 'Interactive Training' },
+  { id: 'review', label: 'Review', description: 'Summary & Assessment' },
 ];
 
 interface ProgressStepperProps {
   currentStep: TrainingStep;
   onStepClick?: (step: TrainingStep) => void;
-  variant?: 'default' | 'breadcrumb';
 }
 
-export function ProgressStepper({ currentStep, onStepClick, variant = 'default' }: ProgressStepperProps) {
+export function ProgressStepper({ currentStep, onStepClick }: ProgressStepperProps) {
   const currentIndex = steps.findIndex(s => s.id === currentStep);
 
-  if (variant === 'breadcrumb') {
-    return (
-      <div className="flex items-center gap-1">
-        {steps.map((step, index) => {
-          const isCompleted = index < currentIndex;
-          const isCurrent = index === currentIndex;
-          const isClickable = isCompleted && onStepClick;
-
-          return (
-            <div key={step.id} className="flex items-center">
+  return (
+    <div className="relative">
+      <div className="flex items-center justify-between">
+        {steps.map((step, index) => (
+          <div key={step.id} className="flex-1 flex items-center">
+            <div className="flex flex-col items-center flex-1">
               <button
-                onClick={() => isClickable && onStepClick(step.id)}
-                disabled={!isClickable}
-                className={`text-sm transition-colors ${
-                  isCompleted
-                    ? 'text-muted-foreground hover:text-foreground cursor-pointer'
-                    : isCurrent
-                    ? 'text-foreground font-semibold'
-                    : 'text-muted-foreground/40 cursor-default'
-                }`}
+                onClick={() => onStepClick?.(step.id)}
+                disabled={!onStepClick}
+                className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                  index < currentIndex
+                    ? 'bg-muted border-muted-foreground/30'
+                    : index === currentIndex
+                    ? 'bg-primary border-primary ring-4 ring-primary/20'
+                    : 'bg-card border-border'
+                } ${onStepClick ? 'cursor-pointer hover:scale-105' : 'cursor-default'}`}
               >
-                {isCurrent && <span className="text-primary mr-1">●</span>}
-                {step.label}
+                {index < currentIndex ? (
+                  <Check className="w-4 h-4 text-muted-foreground" />
+                ) : index === currentIndex ? (
+                  <Circle className="w-4 h-4 text-primary-foreground fill-primary-foreground" />
+                ) : (
+                  <span className="text-sm font-semibold text-muted-foreground">{index + 1}</span>
+                )}
               </button>
 
-              {index < steps.length - 1 && (
-                <span className="text-muted-foreground/30 mx-2">/</span>
-              )}
+              <div className="mt-2 text-center">
+                <p
+                  className={`text-xs font-semibold ${
+                    index <= currentIndex ? 'text-foreground' : 'text-muted-foreground'
+                  }`}
+                >
+                  {step.label}
+                </p>
+                <p
+                  className={`text-xs ${
+                    index <= currentIndex ? 'text-muted-foreground' : 'text-muted-foreground/60'
+                  }`}
+                >
+                  {step.description}
+                </p>
+              </div>
             </div>
-          );
-        })}
-      </div>
-    );
-  }
 
-  return (
-    <div className="flex items-center gap-1">
-      {steps.map((step, index) => (
-        <div key={step.id} className="flex items-center">
-          <button
-            onClick={() => onStepClick?.(step.id)}
-            disabled={!onStepClick}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
-              index < currentIndex
-                ? 'bg-muted text-muted-foreground'
-                : index === currentIndex
-                ? 'bg-primary text-primary-foreground ring-2 ring-primary/20'
-                : 'border border-border text-muted-foreground'
-            } ${onStepClick ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}`}
-          >
-            {index < currentIndex && (
-              <Check className="w-3 h-3" />
+            {index < steps.length - 1 && (
+              <div
+                className={`flex-1 h-0.5 -mt-10 transition-all ${
+                  index < currentIndex ? 'bg-muted-foreground/30' : 'bg-border'
+                }`}
+              />
             )}
-            {step.label}
-          </button>
-
-          {index < steps.length - 1 && (
-            <div className="w-3 h-px bg-border mx-1" />
-          )}
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

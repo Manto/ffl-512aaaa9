@@ -226,7 +226,7 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
           />
           <div className="absolute inset-0 bg-background/30" />
           
-          <div className="relative z-10 p-8 max-w-4xl mx-auto">
+          <div className="relative z-10 p-8 max-w-6xl mx-auto">
             {children}
           </div>
         </main>

@@ -1,4 +1,4 @@
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Menu } from 'lucide-react';
 import { TrainingModule, TrainingStep } from '../../types/training';
 import { ProgressStepper } from './ProgressStepper';
 
@@ -10,19 +10,26 @@ interface ModuleHeaderProps {
 
 export function ModuleHeader({ module, currentStep, onStepClick }: ModuleHeaderProps) {
   return (
-    <div className="bg-card rounded-xl shadow-lg px-4 py-3 mb-4 space-y-2">
-      <div className="flex items-center gap-2">
-        <BookOpen className="w-4 h-4 text-primary flex-shrink-0" />
-        <h2 className="text-sm font-semibold text-foreground">
-          {module.title}
-        </h2>
+    <>
+      <button className="absolute top-0 right-0 p-3 bg-card hover:bg-muted rounded-lg transition-colors shadow-lg">
+        <Menu className="w-5 h-5 text-foreground" />
+      </button>
+
+      <div className="bg-card rounded-2xl shadow-lg p-5 mb-6">
+        <div className="flex items-start gap-3 mb-4">
+          <BookOpen className="w-5 h-5 text-foreground mt-0.5 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              {module.title}
+            </h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {module.description}
+            </p>
+          </div>
+        </div>
+
+        <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
       </div>
-      
-      <p className="text-xs text-muted-foreground">
-        The pump was isolated 6 months ago. The discharge blind is still in place. You are the Field Lead responsible for verifying conditions before work begins.
-      </p>
-      
-      <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
-    </div>
+    </>
   );
 }
