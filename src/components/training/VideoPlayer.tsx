@@ -7,6 +7,8 @@ import {
   Maximize,
   SkipForward,
   Settings,
+  CheckCircle,
+  RotateCcw,
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
@@ -53,8 +55,23 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
     };
   }, [isPlaying, onComplete]);
 
+  const isComplete = progress >= 100;
+
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    if (isComplete) {
+      // Reset and play from beginning
+      setProgress(0);
+      setCurrentTime('0:00');
+      setIsPlaying(true);
+    } else {
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleRewatch = () => {
+    setProgress(0);
+    setCurrentTime('0:00');
+    setIsPlaying(true);
   };
 
   const toggleMute = () => {
@@ -84,8 +101,27 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
           }}
         />
 
+        {/* Completion overlay */}
+        {isComplete && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-20 animate-fade-in">
+            <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4 animate-scale-in">
+              <CheckCircle className="w-12 h-12 text-emerald-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground mb-2">Video Complete</h3>
+            <p className="text-sm text-muted-foreground mb-6">You've finished watching the introduction</p>
+            <Button
+              variant="outline"
+              onClick={handleRewatch}
+              className="bg-background/50 hover:bg-background/80"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Rewatch Video
+            </Button>
+          </div>
+        )}
+
         {/* Play button overlay */}
-        {!isPlaying && (
+        {!isPlaying && !isComplete && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <button
               onClick={togglePlay}
