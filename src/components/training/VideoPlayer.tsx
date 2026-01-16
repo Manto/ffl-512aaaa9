@@ -31,7 +31,6 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
         setProgress((prev) => {
           if (prev >= 100) {
             setIsPlaying(false);
-            onComplete();
             return 100;
           }
           const newProgress = prev + 0.5;
