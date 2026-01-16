@@ -37,6 +37,9 @@ export interface PermitToWork {
   safetyRequirements: SafetyRequirement[];
 }
 
+export type ModuleDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+export type ModuleStatus = 'available' | 'in-progress' | 'completed';
+
 export interface TrainingModule {
   id: string;
   title: string;
@@ -47,6 +50,12 @@ export interface TrainingModule {
   resources: Resource[];
   userRole: string;
   keyReminders: string[];
+  // New metadata fields
+  difficulty?: ModuleDifficulty;
+  duration?: string;
+  location?: string;
+  version?: string;
+  status?: ModuleStatus;
 }
 
 export type TrainingStep = 'intro' | 'briefing' | 'simulation' | 'review';

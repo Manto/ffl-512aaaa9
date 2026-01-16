@@ -1,18 +1,38 @@
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { TrainingLayout } from '../components/training/TrainingLayout';
 import { ModuleHeader } from '../components/training/ModuleHeader';
 import { PermitResourcesScreen } from '../components/training/PermitResourcesScreen';
 import { TeamScreen } from '../components/training/TeamScreen';
 import { MissionBriefingScreen } from '../components/training/MissionBriefingScreen';
 import { SimulationScreen } from '../components/training/SimulationScreen';
-import { p101Module } from '../data/trainingModules';
+import { trainingModules } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
+import { Button } from '../components/ui/button';
 
 export default function TrainingModule() {
+  const { moduleId } = useParams<{ moduleId: string }>();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<TrainingStep>('briefing');
   const [briefingScreen, setBriefingScreen] = useState<BriefingScreen>('permit-resources');
 
-  const module = p101Module;
+  const module = moduleId ? trainingModules[moduleId] : null;
+
+  if (!module) {
+    return (
+      <TrainingLayout>
+        <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
+          <h3 className="text-xl font-semibold text-foreground mb-4">Module Not Found</h3>
+          <p className="text-muted-foreground mb-6">The training module you're looking for doesn't exist.</p>
+          <Button onClick={() => navigate('/training')}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Training Library
+          </Button>
+        </div>
+      </TrainingLayout>
+    );
+  }
 
   const handleNextBriefing = () => {
     if (briefingScreen === 'permit-resources') {
@@ -114,6 +134,17 @@ export default function TrainingModule() {
 
   return (
     <TrainingLayout>
+      {/* Back Navigation */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate('/training')}
+        className="mb-4 text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Training Library
+      </Button>
+
       <ModuleHeader 
         module={module} 
         currentStep={currentStep}
