@@ -3,7 +3,7 @@ import { Send, BookOpen } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
 import { SimulationResourcesDropdown } from './SimulationResourcesDropdown';
-import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
@@ -22,6 +22,7 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
     speakerName: rachel?.name || 'Rachel Chen',
     speakerRole: rachel?.role || 'Lead Maintenance Technician',
     speakerAvatar: rachel?.avatar || 'RC',
+    speakerAvatarUrl: rachel?.avatarUrl,
     content: "Morning! We're ready to get started on P-101. The guys are setting up their tools now. I've got the permit here - want me to walk you through what we're doing, or do you want to verify the isolation points first?",
     timestamp: new Date(),
     isUser: false,
@@ -76,6 +77,7 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
         speakerName: rachel?.name || 'Rachel Chen',
         speakerRole: rachel?.role || 'Lead Maintenance Technician',
         speakerAvatar: rachel?.avatar || 'RC',
+        speakerAvatarUrl: rachel?.avatarUrl,
         content: "Got it. The isolation points are marked on the P&ID - there's the suction valve, discharge valve, and the electrical disconnect. Mike's confirmed LOTO from the control room. Want me to show you where each one is on the equipment?",
         timestamp: new Date(),
         isUser: false,
@@ -150,6 +152,7 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
                   className="h-7 w-7 border-2 border-card"
                   style={{ zIndex: module.team.length - index }}
                 >
+                  <AvatarImage src={member.avatarUrl} alt={member.name} />
                   <AvatarFallback className="bg-muted text-foreground text-xs font-medium">
                     {member.avatar || member.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
