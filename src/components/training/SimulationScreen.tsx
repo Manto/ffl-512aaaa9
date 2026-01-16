@@ -1,13 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, ChevronLeft, ChevronRight, FileText } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
+import { ScrollArea } from '../ui/scroll-area';
 
 interface SimulationScreenProps {
   module: TrainingModule;
+  onBack?: () => void;
   onComplete?: () => void;
 }
 
@@ -25,8 +28,9 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
   };
 };
 
-export function SimulationScreen({ module }: SimulationScreenProps) {
+export function SimulationScreen({ module, onBack, onComplete }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>([getInitialMessage(module)]);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -83,9 +87,16 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
 
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px] bg-card border border-border rounded-xl overflow-hidden">
-      {/* Unified Header with Team + Context */}
+      {/* Header with Navigation + Team + Resources */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+        {/* Left: Back button + Team */}
         <div className="flex items-center gap-3">
+          {onBack && (
+            <Button variant="ghost" size="sm" onClick={onBack} className="gap-1 text-muted-foreground hover:text-foreground">
+              <ChevronLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back</span>
+            </Button>
+          )}
           <div className="flex -space-x-2">
             {module.team.slice(0, 4).map((member) => (
               <Popover key={member.id}>
@@ -117,16 +128,61 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
               </Popover>
             ))}
           </div>
-          <div>
+          <div className="hidden sm:block">
             <h3 className="text-sm font-semibold text-foreground">Field Team Chat</h3>
             <p className="text-xs text-muted-foreground">
               {module.team.length} members • {module.userRole}
             </p>
           </div>
         </div>
-        <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full">
-          Simulation Active
-        </span>
+
+        {/* Right: Resources + Status + Complete */}
+        <div className="flex items-center gap-2">
+          <Sheet open={resourcesOpen} onOpenChange={setResourcesOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1">
+                <FileText className="w-4 h-4" />
+                <span className="hidden sm:inline">Resources</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[350px] sm:w-[400px]">
+              <SheetHeader>
+                <SheetTitle>Scenario Resources</SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-100px)] mt-4">
+                <div className="space-y-3 pr-4">
+                  {module.resources.map((resource, index) => (
+                    <button
+                      key={index}
+                      className="w-full text-left p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-start gap-3">
+                        <FileText className="w-5 h-5 text-primary mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-foreground text-sm">{resource.title}</h4>
+                          {resource.description && (
+                            <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+          
+          <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full hidden sm:inline-flex">
+            Simulation Active
+          </span>
+
+          {onComplete && (
+            <Button variant="default" size="sm" onClick={onComplete} className="gap-1">
+              <span className="hidden sm:inline">Complete</span>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Chat Messages Area */}
