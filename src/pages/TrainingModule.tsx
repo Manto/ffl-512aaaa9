@@ -63,7 +63,13 @@ export default function TrainingModule() {
       case 'briefing':
         return renderBriefingContent();
       case 'simulation':
-        return <SimulationScreen module={module} />;
+        return (
+          <SimulationScreen 
+            module={module} 
+            onBack={() => setCurrentStep('briefing')}
+            onComplete={() => setCurrentStep('review')}
+          />
+        );
       case 'review':
         return (
           <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
