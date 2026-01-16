@@ -1,12 +1,22 @@
-import { ChevronLeft, ChevronRight, Shield, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Shield, CheckCircle2, RotateCcw, ArrowRight, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 
 interface ReviewScreenProps {
   onPrevious?: () => void;
   onRestart?: () => void;
+  onNextModule?: () => void;
 }
 
-export function ReviewScreen({ onPrevious, onRestart }: ReviewScreenProps) {
+// Mock next module recommendation - in a real app this would come from props or context
+const nextModuleRecommendation = {
+  id: 'v-201',
+  title: 'V-201 Pressure Vessel Inspection',
+  description: 'Learn proper procedures for inspecting pressure vessels after extended shutdown.',
+  difficulty: 'Intermediate',
+  duration: '30-45 min',
+};
+
+export function ReviewScreen({ onPrevious, onRestart, onNextModule }: ReviewScreenProps) {
   return (
     <div className="bg-card rounded-2xl shadow-lg overflow-hidden">
       <div className="p-8 space-y-6">
@@ -41,6 +51,54 @@ export function ReviewScreen({ onPrevious, onRestart }: ReviewScreenProps) {
           </div>
         </div>
 
+        {/* Next Steps Card */}
+        <div className="bg-muted/30 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-foreground mb-4">What's Next?</h3>
+          
+          <div className="space-y-4">
+            {/* Practice Again Option */}
+            <button
+              onClick={onRestart}
+              className="w-full flex items-center gap-4 p-4 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <RotateCcw className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Practice Again</p>
+                <p className="text-sm text-muted-foreground">Retry this scenario to improve your score</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+            </button>
+
+            {/* Recommended Next Module */}
+            <button
+              onClick={onNextModule}
+              className="w-full flex items-center gap-4 p-4 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors text-left group"
+            >
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <ArrowRight className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-primary uppercase tracking-wide">Recommended</span>
+                </div>
+                <p className="font-medium text-foreground truncate">{nextModuleRecommendation.title}</p>
+                <p className="text-sm text-muted-foreground line-clamp-1">{nextModuleRecommendation.description}</p>
+                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {nextModuleRecommendation.duration}
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    {nextModuleRecommendation.difficulty}
+                  </span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
         {/* Navigation Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <Button 
@@ -53,10 +111,10 @@ export function ReviewScreen({ onPrevious, onRestart }: ReviewScreenProps) {
           </Button>
 
           <Button 
-            onClick={onRestart}
+            onClick={onNextModule}
             className="gap-2"
           >
-            Restart Simulation
+            Continue Learning
             <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
