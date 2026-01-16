@@ -135,21 +135,11 @@ export default function TrainingModule() {
 
   return (
     <TrainingLayout>
-      {/* Back Navigation */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => navigate('/training')}
-        className="mb-4 text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Training Library
-      </Button>
-
       <ModuleHeader 
         module={module} 
         currentStep={currentStep}
         onStepClick={handleStepClick}
+        onBack={() => navigate('/training')}
       />
       {renderContent()}
     </TrainingLayout>
