@@ -51,6 +51,21 @@ export default function TrainingModule() {
     }
   };
 
+  const handleStepClick = (step: TrainingStep) => {
+    // Only allow navigating to completed steps
+    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'simulation', 'review'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    const targetIndex = stepOrder.indexOf(step);
+    
+    if (targetIndex < currentIndex) {
+      setCurrentStep(step);
+      // Reset briefing screen if going back to briefing
+      if (step === 'briefing') {
+        setBriefingScreen('permit-resources');
+      }
+    }
+  };
+
   const renderContent = () => {
     switch (currentStep) {
       case 'intro':
@@ -65,8 +80,9 @@ export default function TrainingModule() {
       case 'simulation':
         return (
           <SimulationScreen 
-            module={module} 
-            onBack={() => setCurrentStep('briefing')}
+            module={module}
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
             onComplete={() => setCurrentStep('review')}
           />
         );
@@ -84,10 +100,13 @@ export default function TrainingModule() {
 
   return (
     <TrainingLayout>
-      <ModuleHeader 
-        module={module} 
-        currentStep={currentStep}
-      />
+      {currentStep !== 'simulation' && (
+        <ModuleHeader 
+          module={module} 
+          currentStep={currentStep}
+          onStepClick={handleStepClick}
+        />
+      )}
       {renderContent()}
     </TrainingLayout>
   );

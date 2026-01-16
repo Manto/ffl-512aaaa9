@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, ChevronLeft, ChevronRight, FileText } from 'lucide-react';
-import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
+import { Send, FileText, Check } from 'lucide-react';
+import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { ScrollArea } from '../ui/scroll-area';
+import { ProgressStepper } from './ProgressStepper';
 
 interface SimulationScreenProps {
   module: TrainingModule;
-  onBack?: () => void;
+  currentStep: TrainingStep;
+  onStepClick?: (step: TrainingStep) => void;
   onComplete?: () => void;
 }
 
@@ -28,7 +30,7 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
   };
 };
 
-export function SimulationScreen({ module, onBack, onComplete }: SimulationScreenProps) {
+export function SimulationScreen({ module, currentStep, onStepClick, onComplete }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>([getInitialMessage(module)]);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -87,60 +89,61 @@ export function SimulationScreen({ module, onBack, onComplete }: SimulationScree
 
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px] bg-card border border-border rounded-xl overflow-hidden">
-      {/* Header with Navigation + Team + Resources */}
+      {/* Header with Breadcrumb + Team + Resources */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
-        {/* Left: Back button + Team */}
-        <div className="flex items-center gap-3">
-          {onBack && (
-            <Button variant="ghost" size="sm" onClick={onBack} className="gap-1 text-muted-foreground hover:text-foreground">
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back</span>
-            </Button>
-          )}
-          <div className="flex -space-x-2">
-            {module.team.slice(0, 4).map((member) => (
-              <Popover key={member.id}>
-                <PopoverTrigger asChild>
-                  <button className="relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
-                    <img
-                      src={`https://i.pravatar.cc/40?u=${member.id}`}
-                      alt={member.name}
-                      className="w-8 h-8 rounded-full border-2 border-background object-cover hover:scale-110 transition-transform cursor-pointer"
-                    />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-3 bg-popover" align="start">
-                  <div className="flex items-start gap-3">
-                    <img
-                      src={`https://i.pravatar.cc/64?u=${member.id}`}
-                      alt={member.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-foreground text-sm">{member.name}</h4>
-                      <p className="text-xs text-muted-foreground">{member.role}</p>
-                      {member.description && (
-                        <p className="text-xs text-muted-foreground mt-1">{member.description}</p>
-                      )}
+        {/* Left: Breadcrumb + Team avatars */}
+        <div className="flex items-center gap-4">
+          <ProgressStepper 
+            currentStep={currentStep} 
+            onStepClick={onStepClick}
+            variant="breadcrumb"
+          />
+          
+          <div className="h-5 w-px bg-border hidden sm:block" />
+          
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-2">
+              {module.team.slice(0, 3).map((member) => (
+                <Popover key={member.id}>
+                  <PopoverTrigger asChild>
+                    <button className="relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
+                      <img
+                        src={`https://i.pravatar.cc/40?u=${member.id}`}
+                        alt={member.name}
+                        className="w-7 h-7 rounded-full border-2 border-background object-cover hover:scale-110 transition-transform cursor-pointer"
+                      />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-3 bg-popover" align="start">
+                    <div className="flex items-start gap-3">
+                      <img
+                        src={`https://i.pravatar.cc/64?u=${member.id}`}
+                        alt={member.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-foreground text-sm">{member.name}</h4>
+                        <p className="text-xs text-muted-foreground">{member.role}</p>
+                        {member.description && (
+                          <p className="text-xs text-muted-foreground mt-1">{member.description}</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ))}
-          </div>
-          <div className="hidden sm:block">
-            <h3 className="text-sm font-semibold text-foreground">Field Team Chat</h3>
-            <p className="text-xs text-muted-foreground">
-              {module.team.length} members • {module.userRole}
-            </p>
+                  </PopoverContent>
+                </Popover>
+              ))}
+            </div>
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              {module.team.length} in team
+            </span>
           </div>
         </div>
 
-        {/* Right: Resources + Status + Complete */}
+        {/* Right: Resources + Done */}
         <div className="flex items-center gap-2">
           <Sheet open={resourcesOpen} onOpenChange={setResourcesOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <FileText className="w-4 h-4" />
                 <span className="hidden sm:inline">Resources</span>
               </Button>
@@ -171,15 +174,11 @@ export function SimulationScreen({ module, onBack, onComplete }: SimulationScree
               </ScrollArea>
             </SheetContent>
           </Sheet>
-          
-          <span className="text-xs text-primary font-medium px-2 py-1 bg-primary/10 rounded-full hidden sm:inline-flex">
-            Simulation Active
-          </span>
 
           {onComplete && (
-            <Button variant="default" size="sm" onClick={onComplete} className="gap-1">
-              <span className="hidden sm:inline">Complete</span>
-              <ChevronRight className="w-4 h-4" />
+            <Button variant="default" size="sm" onClick={onComplete} className="gap-1.5">
+              <Check className="w-4 h-4" />
+              <span className="hidden sm:inline">Done</span>
             </Button>
           )}
         </div>
