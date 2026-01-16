@@ -16,10 +16,46 @@ const steps: Step[] = [
 interface ProgressStepperProps {
   currentStep: TrainingStep;
   onStepClick?: (step: TrainingStep) => void;
+  variant?: 'default' | 'breadcrumb';
 }
 
-export function ProgressStepper({ currentStep, onStepClick }: ProgressStepperProps) {
+export function ProgressStepper({ currentStep, onStepClick, variant = 'default' }: ProgressStepperProps) {
   const currentIndex = steps.findIndex(s => s.id === currentStep);
+
+  if (variant === 'breadcrumb') {
+    return (
+      <div className="flex items-center gap-1">
+        {steps.map((step, index) => {
+          const isCompleted = index < currentIndex;
+          const isCurrent = index === currentIndex;
+          const isClickable = isCompleted && onStepClick;
+
+          return (
+            <div key={step.id} className="flex items-center">
+              <button
+                onClick={() => isClickable && onStepClick(step.id)}
+                disabled={!isClickable}
+                className={`text-sm transition-colors ${
+                  isCompleted
+                    ? 'text-muted-foreground hover:text-foreground cursor-pointer'
+                    : isCurrent
+                    ? 'text-foreground font-semibold'
+                    : 'text-muted-foreground/40 cursor-default'
+                }`}
+              >
+                {isCurrent && <span className="text-primary mr-1">●</span>}
+                {step.label}
+              </button>
+
+              {index < steps.length - 1 && (
+                <span className="text-muted-foreground/30 mx-2">/</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-1">
