@@ -68,6 +68,7 @@ export interface ChatMessage {
   speakerName: string;
   speakerRole?: string;
   speakerAvatar?: string;
+  speakerAvatarUrl?: string;
   content: string;
   timestamp: Date;
   isUser: boolean;

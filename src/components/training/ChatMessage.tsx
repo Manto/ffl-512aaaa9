@@ -1,5 +1,5 @@
 import { ChatMessage as ChatMessageType } from '../../types/training';
-import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -29,6 +29,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </div>
         </div>
         <Avatar className="h-9 w-9 border-2 border-primary/20">
+          <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face" alt="You" />
           <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
             You
           </AvatarFallback>
@@ -40,6 +41,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className="flex justify-start gap-3 animate-in slide-in-from-left-2 duration-300">
       <Avatar className="h-9 w-9 border-2 border-border">
+        <AvatarImage src={message.speakerAvatarUrl} alt={message.speakerName} />
         <AvatarFallback className="bg-muted text-muted-foreground text-xs font-medium">
           {message.speakerAvatar || message.speakerName.split(' ').map(n => n[0]).join('')}
         </AvatarFallback>
