@@ -316,18 +316,6 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
             <HelpCircle className="w-4 h-4" />
             Help
           </button>
-
-          {/* Separator */}
-          <div className="h-5 w-px bg-border" />
-
-          {/* Done Button */}
-          <Button 
-            size="sm" 
-            onClick={onComplete}
-            className="px-4"
-          >
-            Done
-          </Button>
         </div>
       </div>
 
