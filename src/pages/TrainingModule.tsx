@@ -7,6 +7,7 @@ import { PermitResourcesScreen } from '../components/training/PermitResourcesScr
 import { TeamScreen } from '../components/training/TeamScreen';
 import { MissionBriefingScreen } from '../components/training/MissionBriefingScreen';
 import { SimulationScreen } from '../components/training/SimulationScreen';
+import { ReviewScreen } from '../components/training/ReviewScreen';
 import { VideoPlayer } from '../components/training/VideoPlayer';
 import { trainingModules } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
@@ -123,10 +124,13 @@ export default function TrainingModule() {
         );
       case 'review':
         return (
-          <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Review</h3>
-            <p className="text-muted-foreground">Feedback and results would go here</p>
-          </div>
+          <ReviewScreen 
+            onPrevious={() => setCurrentStep('simulation')}
+            onRestart={() => {
+              setCurrentStep('intro');
+              setBriefingScreen('permit-resources');
+            }}
+          />
         );
       default:
         return null;
