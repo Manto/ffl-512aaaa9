@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Target, ArrowLeft } from 'lucide-react';
-import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
+import { Send, BookOpen } from 'lucide-react';
+import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
-import { SimulationReferencePanel } from './SimulationReferencePanel';
+import { SimulationResourcesDropdown } from './SimulationResourcesDropdown';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
 interface SimulationScreenProps {
   module: TrainingModule;
-  onBack?: () => void;
+  currentStep: TrainingStep;
+  onStepClick?: (step: TrainingStep) => void;
   onComplete?: () => void;
 }
 
@@ -26,10 +28,18 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
   };
 };
 
-export function SimulationScreen({ module, onBack }: SimulationScreenProps) {
+const steps: { id: TrainingStep; label: string }[] = [
+  { id: 'intro', label: 'Intro' },
+  { id: 'briefing', label: 'Briefing' },
+  { id: 'simulation', label: 'Simulation' },
+  { id: 'review', label: 'Review' },
+];
+
+export function SimulationScreen({ module, currentStep, onStepClick, onComplete }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>([getInitialMessage(module)]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -82,49 +92,112 @@ export function SimulationScreen({ module, onBack }: SimulationScreenProps) {
     }
   };
 
-  return (
-    <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
-      {/* Back Navigation */}
-      {onBack && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="self-start mb-3 -ml-2 text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to Briefing
-        </Button>
-      )}
+  const getStepState = (stepId: TrainingStep) => {
+    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'simulation', 'review'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    const stepIndex = stepOrder.indexOf(stepId);
+    
+    if (stepId === currentStep) return 'current';
+    if (stepIndex < currentIndex) return 'completed';
+    return 'upcoming';
+  };
 
-      {/* Simulation Intro Banner */}
-      <div className="bg-card border border-primary/20 rounded-xl p-4 mb-4">
-        <div className="flex items-start gap-3">
-          <div className="p-2 bg-primary/20 rounded-lg">
-            <Target className="w-5 h-5 text-primary" />
+  return (
+    <div className="bg-card rounded-2xl shadow-lg overflow-hidden flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
+      {/* Inline Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        {/* Left: Breadcrumb Navigation */}
+        <div className="flex items-center gap-1">
+          {steps.map((step, index) => {
+            const state = getStepState(step.id);
+            return (
+              <div key={step.id} className="flex items-center">
+                {index > 0 && (
+                  <span className="text-muted-foreground/50 mx-1">/</span>
+                )}
+                <button
+                  onClick={() => onStepClick?.(step.id)}
+                  disabled={state === 'upcoming'}
+                  className={`flex items-center gap-1.5 text-sm transition-colors ${
+                    state === 'current'
+                      ? 'text-foreground font-medium'
+                      : state === 'completed'
+                      ? 'text-muted-foreground hover:text-foreground cursor-pointer'
+                      : 'text-muted-foreground/50 cursor-not-allowed'
+                  }`}
+                >
+                  {state === 'current' && (
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                  )}
+                  {step.label}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right: Team Avatars, Resources, Done */}
+        <div className="flex items-center gap-4">
+          {/* Separator */}
+          <div className="h-5 w-px bg-border" />
+
+          {/* Avatar Stack */}
+          <div className="flex items-center">
+            <div className="flex -space-x-2">
+              {module.team.slice(0, 4).map((member, index) => (
+                <Avatar 
+                  key={member.id} 
+                  className="h-7 w-7 border-2 border-card"
+                  style={{ zIndex: module.team.length - index }}
+                >
+                  <AvatarFallback className="bg-muted text-foreground text-xs font-medium">
+                    {member.avatar || member.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+            <span className="ml-2 text-sm text-muted-foreground">
+              {module.team.length} in team
+            </span>
           </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-foreground mb-1">
-              SIMULATION: Start Work Verification
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              You'll roleplay a real conversation with your field team. 
-              Respond as you would on-site. Your choices will affect the outcome.
-            </p>
-            <p className="text-xs text-primary mt-2 font-medium">
-              Your Role: {module.userRole}
-            </p>
+
+          {/* Separator */}
+          <div className="h-5 w-px bg-border" />
+
+          {/* Resources Button */}
+          <div className="relative">
+            <button
+              onClick={() => setIsResourcesOpen(!isResourcesOpen)}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <BookOpen className="w-4 h-4" />
+              Resources
+            </button>
+            
+            {isResourcesOpen && (
+              <SimulationResourcesDropdown 
+                module={module} 
+                onClose={() => setIsResourcesOpen(false)} 
+              />
+            )}
           </div>
+
+          {/* Separator */}
+          <div className="h-5 w-px bg-border" />
+
+          {/* Done Button */}
+          <Button 
+            size="sm" 
+            onClick={onComplete}
+            className="px-4"
+          >
+            Done
+          </Button>
         </div>
       </div>
 
-      {/* Tabbed Reference Panel */}
-      <div className="mb-4">
-        <SimulationReferencePanel module={module} />
-      </div>
-
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto bg-card border border-border rounded-xl p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -144,7 +217,7 @@ export function SimulationScreen({ module, onBack }: SimulationScreenProps) {
       </div>
 
       {/* Input Area */}
-      <div className="mt-4 flex gap-3">
+      <div className="p-4 border-t border-border flex gap-3">
         <Textarea
           ref={textareaRef}
           value={inputValue}

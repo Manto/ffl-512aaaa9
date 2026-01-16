@@ -34,10 +34,7 @@ export default function TrainingModule() {
     setCurrentStep('simulation');
   };
 
-  const handleBackToBriefing = () => {
-    setCurrentStep('briefing');
-    setBriefingScreen('mission-summary');
-  };
+  // Navigation back to briefing can be done via step click
 
   const handleStepClick = (step: TrainingStep) => {
     // Only allow navigation to completed steps or current step
@@ -95,7 +92,14 @@ export default function TrainingModule() {
       case 'briefing':
         return renderBriefingContent();
       case 'simulation':
-        return <SimulationScreen module={module} onBack={handleBackToBriefing} />;
+        return (
+          <SimulationScreen 
+            module={module} 
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
+            onComplete={() => setCurrentStep('review')}
+          />
+        );
       case 'review':
         return (
           <div className="bg-card rounded-2xl shadow-lg p-8 text-center">

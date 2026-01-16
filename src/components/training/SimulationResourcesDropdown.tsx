@@ -1,19 +1,43 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, Users, FileText, BookOpen, Shield, AlertTriangle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Users, FileText, BookOpen, Shield, AlertTriangle, X } from 'lucide-react';
 import { TrainingModule, TeamMember, Resource } from '../../types/training';
 import { Avatar, AvatarFallback } from '../ui/avatar';
-import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 
-interface SimulationReferencePanelProps {
+interface SimulationResourcesDropdownProps {
   module: TrainingModule;
+  onClose: () => void;
 }
 
 type TabType = 'team' | 'permit' | 'resources';
 
-export function SimulationReferencePanel({ module }: SimulationReferencePanelProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export function SimulationResourcesDropdown({ module, onClose }: SimulationResourcesDropdownProps) {
   const [activeTab, setActiveTab] = useState<TabType>('team');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  // Close on escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
 
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'team', label: 'Team', icon: <Users className="w-4 h-4" /> },
@@ -54,7 +78,7 @@ export function SimulationReferencePanel({ module }: SimulationReferencePanelPro
           <p className="text-sm font-semibold text-foreground">{module.permit.permitNumber}</p>
           <p className="text-xs text-muted-foreground">Valid until {module.permit.validUntil}</p>
         </div>
-        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+        <Badge variant="secondary" className="bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30">
           {module.permit.status}
         </Badge>
       </div>
@@ -120,60 +144,43 @@ export function SimulationReferencePanel({ module }: SimulationReferencePanelPro
   };
 
   return (
-    <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl overflow-hidden shadow-sm">
+    <div 
+      ref={dropdownRef}
+      className="absolute right-0 top-full mt-2 w-[400px] bg-card border border-border rounded-xl shadow-lg z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+    >
       {/* Header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <BookOpen className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-foreground">Quick Reference</span>
-          <div className="flex items-center gap-1">
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-              {module.team.length} team
-            </Badge>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-              {module.resources.length} docs
-            </Badge>
-          </div>
-        </div>
-        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-          {isExpanded ? (
-            <ChevronUp className="w-4 h-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
-          )}
-        </Button>
-      </button>
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <span className="text-sm font-medium text-foreground">Quick Reference</span>
+        <button 
+          onClick={onClose}
+          className="p-1 hover:bg-muted rounded transition-colors"
+        >
+          <X className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </div>
 
-      {/* Expanded Content */}
-      {isExpanded && (
-        <div className="animate-in slide-in-from-top-2 duration-200">
-          {/* Tabs */}
-          <div className="px-4 pb-2 flex gap-1 border-b border-border">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-t-lg transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-muted text-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }`}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </div>
+      {/* Tabs */}
+      <div className="px-4 pt-2 flex gap-1 border-b border-border">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-t-lg transition-colors ${
+              activeTab === tab.id
+                ? 'bg-muted text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            }`}
+          >
+            {tab.icon}
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          {/* Tab Content */}
-          <div className="p-4 max-h-[300px] overflow-y-auto">
-            {renderContent()}
-          </div>
-        </div>
-      )}
+      {/* Tab Content */}
+      <div className="p-4 max-h-[350px] overflow-y-auto">
+        {renderContent()}
+      </div>
     </div>
   );
 }
