@@ -130,6 +130,7 @@ export default function TrainingModule() {
               setCurrentStep('intro');
               setBriefingScreen('permit-resources');
             }}
+            onNextModule={() => navigate('/training')}
           />
         );
       default:
