@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Home,
   BookOpen,
@@ -20,8 +21,12 @@ interface TrainingLayoutProps {
 }
 
 export function TrainingLayout({ children }: TrainingLayoutProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(['training']);
+
+  const isTrainingActive = location.pathname === '/' || location.pathname.startsWith('/training');
 
   const toggleMenu = (menu: string) => {
     setExpandedMenus(prev =>
@@ -81,13 +86,18 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
 
             <div>
               <button
-                onClick={() => toggleMenu('training')}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors group"
+                onClick={() => {
+                  toggleMenu('training');
+                  navigate('/training');
+                }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
+                  isTrainingActive ? 'bg-primary/10' : 'hover:bg-muted'
+                }`}
               >
-                <BookOpen className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
+                <BookOpen className={`w-5 h-5 ${isTrainingActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
                 {sidebarExpanded && (
                   <>
-                    <span className="flex-1 text-left text-sm font-medium text-muted-foreground group-hover:text-foreground">
+                    <span className={`flex-1 text-left text-sm font-medium ${isTrainingActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>
                       Training
                     </span>
                     <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expandedMenus.includes('training') ? 'rotate-180' : ''}`} />
@@ -97,13 +107,20 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
 
               {sidebarExpanded && expandedMenus.includes('training') && (
                 <div className="ml-8 mt-1 space-y-1">
-                  <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground">
+                  <button 
+                    onClick={() => navigate('/training')}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm ${
+                      location.pathname === '/training' || location.pathname === '/'
+                        ? 'bg-muted text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
                     All Modules
                   </button>
                   <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground">
                     In Progress
                   </button>
-                  <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-sm text-muted-foreground hover:text-foreground">
+                  <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground">
                     Completed
                   </button>
                 </div>

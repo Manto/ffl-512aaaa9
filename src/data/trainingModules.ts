@@ -12,6 +12,12 @@ export const p101Module: TrainingModule = {
     'Maintain LEL monitoring throughout',
     'Stop work immediately if unsafe conditions arise',
   ],
+  // New metadata
+  difficulty: 'Advanced',
+  duration: '45-60 min',
+  location: 'Isobutane Processing Unit',
+  version: 'V2',
+  status: 'available',
   permit: {
     permitNumber: 'PTW-2025-1024',
     issueDate: 'October 24, 2025',
