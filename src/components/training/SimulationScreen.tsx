@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, BookOpen, Play } from 'lucide-react';
+import { Send, HelpCircle, Play } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
-import { SimulationResourcesDropdown } from './SimulationResourcesDropdown';
+import { AICoachPanel } from './AICoachPanel';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
@@ -60,7 +60,7 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
   const [messages, setMessages] = useState<ChatMessageType[]>(getInitialMessages(module));
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
+  const [isCoachPanelOpen, setIsCoachPanelOpen] = useState(false);
   const [phase, setPhase] = useState<SimulationPhase>('chat');
   const [messageCount, setMessageCount] = useState(0);
   const [showContinueButton, setShowContinueButton] = useState(false);
@@ -241,8 +241,12 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
     );
   }
 
+  const currentPhaseLabel = phase === 'decision' ? 'Decision Point' : phase === 'correct' ? 'Completed' : 'Active';
+
   return (
-    <div className="bg-card rounded-2xl shadow-lg overflow-hidden flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
+    <div className="flex h-[calc(100vh-200px)] max-h-[700px] gap-0">
+      {/* Main Simulation Area */}
+      <div className={`bg-card rounded-2xl shadow-lg overflow-hidden flex flex-col flex-1 transition-all duration-300 ${isCoachPanelOpen ? 'md:rounded-r-none' : ''}`}>
       {/* Inline Header */}
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         {/* Left: Breadcrumb Navigation */}
@@ -304,23 +308,14 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
           {/* Separator */}
           <div className="h-5 w-px bg-border" />
 
-          {/* Resources Button */}
-          <div className="relative">
-            <button
-              onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <BookOpen className="w-4 h-4" />
-              Resources
-            </button>
-            
-            {isResourcesOpen && (
-              <SimulationResourcesDropdown 
-                module={module} 
-                onClose={() => setIsResourcesOpen(false)} 
-              />
-            )}
-          </div>
+          {/* Help Button */}
+          <button
+            onClick={() => setIsCoachPanelOpen(true)}
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" />
+            Help
+          </button>
 
           {/* Separator */}
           <div className="h-5 w-px bg-border" />
@@ -391,6 +386,15 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
           <Send className="w-4 h-4" />
         </Button>
       </div>
+      </div>
+
+      {/* AI Coach Panel */}
+      <AICoachPanel
+        module={module}
+        currentPhase={currentPhaseLabel}
+        isOpen={isCoachPanelOpen}
+        onClose={() => setIsCoachPanelOpen(false)}
+      />
     </div>
   );
 }
