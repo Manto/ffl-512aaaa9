@@ -1,4 +1,6 @@
+import { BookOpen } from 'lucide-react';
 import { TrainingModule, TrainingStep } from '../../types/training';
+import { ProgressStepper } from './ProgressStepper';
 
 interface ModuleHeaderProps {
   module: TrainingModule;
@@ -6,52 +8,25 @@ interface ModuleHeaderProps {
   onStepClick?: (step: TrainingStep) => void;
 }
 
-const steps: { id: TrainingStep; label: string }[] = [
-  { id: 'intro', label: 'Intro' },
-  { id: 'briefing', label: 'Briefing' },
-  { id: 'simulation', label: 'Simulation' },
-  { id: 'review', label: 'Review' },
-];
-
 export function ModuleHeader({ module, currentStep, onStepClick }: ModuleHeaderProps) {
-  const currentIndex = steps.findIndex(s => s.id === currentStep);
-  const currentLabel = steps[currentIndex]?.label || 'Intro';
-
   return (
-    <div className="flex items-center justify-between gap-4 py-3 px-4 mb-4 bg-card/80 backdrop-blur-sm rounded-lg border border-border/50">
-      {/* Left: Step indicator */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-foreground">
-          {currentLabel}
-        </span>
-        <span className="text-xs text-muted-foreground">
-          Step {currentIndex + 1} of {steps.length}
-        </span>
-      </div>
+    <>
 
-      {/* Center: Step dots */}
-      <div className="hidden sm:flex items-center gap-1.5">
-        {steps.map((step, index) => (
-          <button
-            key={step.id}
-            onClick={() => onStepClick?.(step.id)}
-            disabled={!onStepClick || index > currentIndex}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex
-                ? 'w-6 bg-primary'
-                : index < currentIndex
-                ? 'bg-primary/50 hover:bg-primary/70'
-                : 'bg-border'
-            } ${onStepClick && index <= currentIndex ? 'cursor-pointer' : 'cursor-default'}`}
-            title={step.label}
-          />
-        ))}
-      </div>
+      <div className="bg-card rounded-2xl shadow-lg p-5 mb-6">
+        <div className="flex items-start gap-3 mb-4">
+          <BookOpen className="w-5 h-5 text-foreground mt-0.5 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              {module.title}
+            </h2>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {module.description}
+            </p>
+          </div>
+        </div>
 
-      {/* Right: Scenario title */}
-      <p className="text-xs text-muted-foreground truncate max-w-[200px]">
-        {module.title}
-      </p>
-    </div>
+        <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
+      </div>
+    </>
   );
 }
