@@ -26,7 +26,8 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [expandedMenus, setExpandedMenus] = useState<string[]>(['training']);
 
-  const isTrainingActive = location.pathname === '/' || location.pathname.startsWith('/training');
+  const isDashboardActive = location.pathname === '/';
+  const isTrainingActive = location.pathname.startsWith('/training');
 
   const toggleMenu = (menu: string) => {
     setExpandedMenus(prev =>
@@ -77,10 +78,15 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
               </p>
             )}
 
-            <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors group">
-              <Home className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
+            <button 
+              onClick={() => navigate('/')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
+                isDashboardActive ? 'bg-primary/10' : 'hover:bg-muted'
+              }`}
+            >
+              <Home className={`w-5 h-5 ${isDashboardActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
               {sidebarExpanded && (
-                <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground">Dashboard</span>
+                <span className={`text-sm font-medium ${isDashboardActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}>Dashboard</span>
               )}
             </button>
 
@@ -110,7 +116,7 @@ export function TrainingLayout({ children }: TrainingLayoutProps) {
                   <button 
                     onClick={() => navigate('/training')}
                     className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm ${
-                      location.pathname === '/training' || location.pathname === '/'
+                      location.pathname === '/training'
                         ? 'bg-muted text-foreground'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }`}
