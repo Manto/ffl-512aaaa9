@@ -1,4 +1,4 @@
-import { CheckCircle2, FileText, AlertTriangle, MapPin, Wrench, User, Target, ClipboardList, ShieldAlert } from 'lucide-react';
+import { CheckCircle2, FileText, AlertTriangle, MapPin, Wrench, User, ShieldAlert } from 'lucide-react';
 import { TrainingModule } from '../../types/training';
 
 interface PermitResourcesScreenProps {
@@ -11,61 +11,32 @@ export function PermitResourcesScreen({ module, onNext }: PermitResourcesScreenP
 
   return (
     <div className="space-y-6">
-      {/* Orientation Section */}
-      <div className="bg-card rounded-2xl shadow-lg overflow-hidden">
-        <div className="bg-primary/10 px-6 py-4 border-b border-border">
-          <h3 className="text-lg font-semibold text-foreground">Your Mission</h3>
-        </div>
-        <div className="p-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Your Role */}
-            <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <User className="w-4 h-4 text-primary" />
+      {/* Orientation Section - Compact 2-column */}
+      <div className="bg-card rounded-xl shadow-sm overflow-hidden">
+        <div className="p-4">
+          <div className="grid md:grid-cols-2 gap-3">
+            {/* Your Responsibility */}
+            <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+              <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <User className="w-3.5 h-3.5 text-primary" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">Your Role</h4>
-                <p className="text-sm text-muted-foreground">
-                  You are the Field Lead responsible for verifying site conditions before recommissioning begins.
+                <h4 className="text-sm font-semibold text-foreground mb-0.5">Your Responsibility</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  You are the Field Lead responsible for deciding whether work on the P-101 Isobutane Pump can safely proceed.
                 </p>
               </div>
             </div>
 
-            {/* Your Objective */}
-            <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Target className="w-4 h-4 text-primary" />
+            {/* Why This Decision Matters */}
+            <div className="flex items-start gap-3 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+              <div className="w-7 h-7 rounded-md bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">Your Objective</h4>
-                <p className="text-sm text-muted-foreground">
-                  Decide whether it is safe to proceed with work.
-                </p>
-              </div>
-            </div>
-
-            {/* What You'll Do Next */}
-            <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <ClipboardList className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">What You'll Do Next</h4>
-                <p className="text-sm text-muted-foreground">
-                  Review key documents and site information to verify conditions.
-                </p>
-              </div>
-            </div>
-
-            {/* Why This Matters */}
-            <div className="flex items-start gap-3 p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                <ShieldAlert className="w-4 h-4 text-amber-600" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-1">Why This Matters</h4>
-                <p className="text-sm text-muted-foreground">
-                  Missing a condition can result in unsafe work or equipment failure.
+                <h4 className="text-sm font-semibold text-foreground mb-0.5">Why This Decision Matters</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  If site conditions are not correctly verified, work may proceed under unsafe conditions, putting personnel and equipment at risk.
                 </p>
               </div>
             </div>
