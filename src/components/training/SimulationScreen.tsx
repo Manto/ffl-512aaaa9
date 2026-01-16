@@ -33,12 +33,7 @@ const getInitialMessages = (module: TrainingModule): ChatMessageType[] => {
   ];
 };
 
-const steps: { id: TrainingStep; label: string }[] = [
-  { id: 'intro', label: 'Intro' },
-  { id: 'briefing', label: 'Briefing' },
-  { id: 'simulation', label: 'Simulation' },
-  { id: 'review', label: 'Review' },
-];
+// Script of the conversation leading to the decision point
 
 // Script of the conversation leading to the decision point
 const conversationScript: { trigger: string; response: string }[] = [
@@ -56,7 +51,7 @@ const DECISION_QUESTION = "Alright, let's proceed with the task. Remember, safet
 
 const CORRECT_RESPONSE = "Great choice! You vent a small hiss to zero, confirm no odor, and note a 0% LEL reading. This shows respect for trapped pressure and protects against spray when the blind comes off.";
 
-export function SimulationScreen({ module, currentStep, onStepClick, onComplete }: SimulationScreenProps) {
+export function SimulationScreen({ module, onComplete }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>(getInitialMessages(module));
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -200,16 +195,6 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
     onComplete?.();
   };
 
-  const getStepState = (stepId: TrainingStep) => {
-    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'simulation', 'review'];
-    const currentIndex = stepOrder.indexOf(currentStep);
-    const stepIndex = stepOrder.indexOf(stepId);
-    
-    if (stepId === currentStep) return 'current';
-    if (stepIndex < currentIndex) return 'completed';
-    return 'upcoming';
-  };
-
   // Show video player after correct answer
   if (phase === 'video') {
     return (
@@ -249,42 +234,9 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
       <div className={`bg-card rounded-2xl shadow-lg overflow-hidden flex flex-col flex-1 transition-all duration-300 ${isCoachPanelOpen ? 'md:rounded-r-none' : ''}`}>
       {/* Inline Header */}
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        {/* Left: Breadcrumb Navigation */}
-        <div className="flex items-center gap-1">
-          {steps.map((step, index) => {
-            const state = getStepState(step.id);
-            return (
-              <div key={step.id} className="flex items-center">
-                {index > 0 && (
-                  <span className="text-muted-foreground/50 mx-1">/</span>
-                )}
-                <button
-                  onClick={() => onStepClick?.(step.id)}
-                  disabled={state === 'upcoming'}
-                  className={`flex items-center gap-1.5 text-sm transition-colors ${
-                    state === 'current'
-                      ? 'text-foreground font-medium'
-                      : state === 'completed'
-                      ? 'text-muted-foreground hover:text-foreground cursor-pointer'
-                      : 'text-muted-foreground/50 cursor-not-allowed'
-                  }`}
-                >
-                  {state === 'current' && (
-                    <span className="w-2 h-2 rounded-full bg-primary" />
-                  )}
-                  {step.label}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Right: Team Avatars, Resources, Done */}
-        <div className="flex items-center gap-4">
-          {/* Separator */}
-          <div className="h-5 w-px bg-border" />
-
-          {/* Avatar Stack */}
+        {/* Left: Group Chat with Avatars */}
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-foreground">Group Chat</span>
           <div className="flex items-center">
             <div className="flex -space-x-2">
               {module.team.slice(0, 4).map((member, index) => (
@@ -304,19 +256,16 @@ export function SimulationScreen({ module, currentStep, onStepClick, onComplete 
               {module.team.length} in team
             </span>
           </div>
-
-          {/* Separator */}
-          <div className="h-5 w-px bg-border" />
-
-          {/* Help Button */}
-          <button
-            onClick={() => setIsCoachPanelOpen(true)}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-            Help
-          </button>
         </div>
+
+        {/* Right: Help Button */}
+        <button
+          onClick={() => setIsCoachPanelOpen(true)}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <HelpCircle className="w-4 h-4" />
+          Help
+        </button>
       </div>
 
       {/* Chat Messages Area */}
