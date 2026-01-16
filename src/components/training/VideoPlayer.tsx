@@ -14,10 +14,9 @@ import { Slider } from '../ui/slider';
 interface VideoPlayerProps {
   title: string;
   onComplete: () => void;
-  onSkip?: () => void;
 }
 
-export function VideoPlayer({ title, onComplete, onSkip }: VideoPlayerProps) {
+export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -99,23 +98,11 @@ export function VideoPlayer({ title, onComplete, onSkip }: VideoPlayerProps) {
         )}
 
         {/* Video title overlay */}
-        <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
+        <div className="absolute top-4 left-4 z-10">
           <div className="bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2">
             <p className="text-xs text-muted-foreground">Introduction</p>
             <p className="text-sm font-medium text-foreground">{title}</p>
           </div>
-
-          {onSkip && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={onSkip}
-              className="bg-background/80 backdrop-blur-sm hover:bg-background/90"
-            >
-              <SkipForward className="w-4 h-4 mr-1" />
-              Skip Intro
-            </Button>
-          )}
         </div>
 
         {/* Progress bar on video */}

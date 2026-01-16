@@ -108,7 +108,6 @@ export default function TrainingModule() {
           <VideoPlayer
             title={module.title}
             onComplete={() => setCurrentStep('briefing')}
-            onSkip={() => setCurrentStep('briefing')}
           />
         );
       case 'briefing':
