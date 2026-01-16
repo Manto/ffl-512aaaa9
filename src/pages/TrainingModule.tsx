@@ -7,6 +7,7 @@ import { PermitResourcesScreen } from '../components/training/PermitResourcesScr
 import { TeamScreen } from '../components/training/TeamScreen';
 import { MissionBriefingScreen } from '../components/training/MissionBriefingScreen';
 import { SimulationScreen } from '../components/training/SimulationScreen';
+import { VideoPlayer } from '../components/training/VideoPlayer';
 import { trainingModules } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
 import { Button } from '../components/ui/button';
@@ -14,7 +15,7 @@ import { Button } from '../components/ui/button';
 export default function TrainingModule() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<TrainingStep>('briefing');
+  const [currentStep, setCurrentStep] = useState<TrainingStep>('intro');
   const [briefingScreen, setBriefingScreen] = useState<BriefingScreen>('permit-resources');
 
   const module = moduleId ? trainingModules[moduleId] : null;
@@ -104,10 +105,11 @@ export default function TrainingModule() {
     switch (currentStep) {
       case 'intro':
         return (
-          <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
-            <h3 className="text-xl font-semibold text-foreground mb-4">Introduction Video</h3>
-            <p className="text-muted-foreground">Video player would go here</p>
-          </div>
+          <VideoPlayer
+            title={module.title}
+            onComplete={() => setCurrentStep('briefing')}
+            onSkip={() => setCurrentStep('briefing')}
+          />
         );
       case 'briefing':
         return renderBriefingContent();
