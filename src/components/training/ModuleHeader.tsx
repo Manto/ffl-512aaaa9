@@ -1,4 +1,4 @@
-import { BookOpen, Menu } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { TrainingModule, TrainingStep } from '../../types/training';
 import { ProgressStepper } from './ProgressStepper';
 
@@ -11,9 +11,6 @@ interface ModuleHeaderProps {
 export function ModuleHeader({ module, currentStep, onStepClick }: ModuleHeaderProps) {
   return (
     <>
-      <button className="absolute top-0 right-0 p-3 bg-card hover:bg-muted rounded-lg transition-colors shadow-lg">
-        <Menu className="w-5 h-5 text-foreground" />
-      </button>
 
       <div className="bg-card rounded-2xl shadow-lg p-5 mb-6">
         <div className="flex items-start gap-3 mb-4">
