@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Target } from 'lucide-react';
+import { Send, Target, ArrowLeft } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
-import { TeamQuickReference } from './TeamQuickReference';
+import { SimulationReferencePanel } from './SimulationReferencePanel';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
 interface SimulationScreenProps {
   module: TrainingModule;
+  onBack?: () => void;
   onComplete?: () => void;
 }
 
@@ -25,7 +26,7 @@ const getInitialMessage = (module: TrainingModule): ChatMessageType => {
   };
 };
 
-export function SimulationScreen({ module }: SimulationScreenProps) {
+export function SimulationScreen({ module, onBack }: SimulationScreenProps) {
   const [messages, setMessages] = useState<ChatMessageType[]>([getInitialMessage(module)]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -83,13 +84,26 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
 
   return (
     <div className="flex flex-col h-[calc(100vh-200px)] max-h-[700px]">
+      {/* Back Navigation */}
+      {onBack && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className="self-start mb-3 -ml-2 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          Back to Briefing
+        </Button>
+      )}
+
       {/* Simulation Intro Banner */}
       <div className="bg-card border border-primary/20 rounded-xl p-4 mb-4">
         <div className="flex items-start gap-3">
           <div className="p-2 bg-primary/20 rounded-lg">
             <Target className="w-5 h-5 text-primary" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="text-sm font-semibold text-foreground mb-1">
               SIMULATION: Start Work Verification
             </h3>
@@ -104,9 +118,9 @@ export function SimulationScreen({ module }: SimulationScreenProps) {
         </div>
       </div>
 
-      {/* Team Quick Reference */}
+      {/* Tabbed Reference Panel */}
       <div className="mb-4">
-        <TeamQuickReference team={module.team} />
+        <SimulationReferencePanel module={module} />
       </div>
 
       {/* Chat Messages Area */}

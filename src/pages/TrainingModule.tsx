@@ -32,7 +32,25 @@ export default function TrainingModule() {
 
   const handleStartSimulation = () => {
     setCurrentStep('simulation');
-    // In future: navigate to simulation screen
+  };
+
+  const handleBackToBriefing = () => {
+    setCurrentStep('briefing');
+    setBriefingScreen('mission-summary');
+  };
+
+  const handleStepClick = (step: TrainingStep) => {
+    // Only allow navigation to completed steps or current step
+    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'simulation', 'review'];
+    const currentIndex = stepOrder.indexOf(currentStep);
+    const targetIndex = stepOrder.indexOf(step);
+    
+    if (targetIndex <= currentIndex) {
+      setCurrentStep(step);
+      if (step === 'briefing') {
+        setBriefingScreen('permit-resources');
+      }
+    }
   };
 
   const renderBriefingContent = () => {
@@ -77,7 +95,7 @@ export default function TrainingModule() {
       case 'briefing':
         return renderBriefingContent();
       case 'simulation':
-        return <SimulationScreen module={module} />;
+        return <SimulationScreen module={module} onBack={handleBackToBriefing} />;
       case 'review':
         return (
           <div className="bg-card rounded-2xl shadow-lg p-8 text-center">
@@ -95,6 +113,7 @@ export default function TrainingModule() {
       <ModuleHeader 
         module={module} 
         currentStep={currentStep}
+        onStepClick={handleStepClick}
       />
       {renderContent()}
     </TrainingLayout>
