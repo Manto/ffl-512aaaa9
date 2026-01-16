@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, HelpCircle, Play } from 'lucide-react';
-import { TrainingModule, ChatMessage as ChatMessageType, TrainingStep } from '../../types/training';
+import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
 import { AICoachPanel } from './AICoachPanel';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
@@ -9,8 +9,6 @@ import { Textarea } from '../ui/textarea';
 
 interface SimulationScreenProps {
   module: TrainingModule;
-  currentStep: TrainingStep;
-  onStepClick?: (step: TrainingStep) => void;
   onComplete?: () => void;
 }
 
