@@ -53,14 +53,14 @@ export default function TrainingModule() {
   };
 
   const handleStartSimulation = () => {
-    setCurrentStep('simulation');
+    setCurrentStep('situation');
   };
 
   // Navigation back to briefing can be done via step click
 
   const handleStepClick = (step: TrainingStep) => {
     // Only allow navigation to completed steps or current step
-    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'simulation', 'review'];
+    const stepOrder: TrainingStep[] = ['intro', 'briefing', 'situation', 'simulation', 'review'];
     const currentIndex = stepOrder.indexOf(currentStep);
     const targetIndex = stepOrder.indexOf(step);
     
@@ -108,17 +108,27 @@ export default function TrainingModule() {
         return (
           <VideoPlayer
             title={module.title}
+            subtitle="Introduction"
+            continueLabel="Continue to Briefing"
             onComplete={() => setCurrentStep('briefing')}
           />
         );
       case 'briefing':
         return renderBriefingContent();
+      case 'situation':
+        return (
+          <VideoPlayer
+            title="Arriving at the Work Site"
+            subtitle="Situation Video"
+            continueLabel="Start Simulation"
+            backgroundImage="https://images.pexels.com/photos/2760243/pexels-photo-2760243.jpeg?auto=compress&cs=tinysrgb&w=1920"
+            onComplete={() => setCurrentStep('simulation')}
+          />
+        );
       case 'simulation':
         return (
           <SimulationScreen 
             module={module} 
-            currentStep={currentStep}
-            onStepClick={handleStepClick}
             onComplete={() => setCurrentStep('review')}
           />
         );

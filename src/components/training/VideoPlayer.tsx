@@ -16,9 +16,18 @@ import { Slider } from '../ui/slider';
 interface VideoPlayerProps {
   title: string;
   onComplete: () => void;
+  subtitle?: string;
+  continueLabel?: string;
+  backgroundImage?: string;
 }
 
-export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
+export function VideoPlayer({ 
+  title, 
+  onComplete, 
+  subtitle = 'Introduction',
+  continueLabel = 'Continue to Briefing',
+  backgroundImage = 'https://images.pexels.com/photos/247763/pexels-photo-247763.jpeg?auto=compress&cs=tinysrgb&w=1920'
+}: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -94,8 +103,7 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage:
-              'url(https://images.pexels.com/photos/247763/pexels-photo-247763.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+            backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -135,7 +143,7 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
         {/* Video title overlay */}
         <div className="absolute top-4 left-4 z-10">
           <div className="bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2">
-            <p className="text-xs text-muted-foreground">Introduction</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
             <p className="text-sm font-medium text-foreground">{title}</p>
           </div>
         </div>
@@ -223,7 +231,7 @@ export function VideoPlayer({ title, onComplete }: VideoPlayerProps) {
         {/* Continue button */}
         <div className="mt-4 pt-4 border-t border-border flex justify-end">
           <Button onClick={onComplete} className="bg-primary hover:bg-primary/90">
-            Continue to Briefing
+            {continueLabel}
             <SkipForward className="w-4 h-4 ml-2" />
           </Button>
         </div>

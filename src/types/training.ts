@@ -59,7 +59,7 @@ export interface TrainingModule {
   status?: ModuleStatus;
 }
 
-export type TrainingStep = 'intro' | 'briefing' | 'simulation' | 'review';
+export type TrainingStep = 'intro' | 'briefing' | 'situation' | 'simulation' | 'review';
 export type BriefingScreen = 'permit-resources' | 'team' | 'mission-summary';
 
 export interface ChatMessage {

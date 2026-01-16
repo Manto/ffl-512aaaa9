@@ -9,6 +9,7 @@ interface Step {
 const steps: Step[] = [
   { id: 'intro', label: 'Intro' },
   { id: 'briefing', label: 'Briefing' },
+  { id: 'situation', label: 'Situation' },
   { id: 'simulation', label: 'Simulation' },
   { id: 'review', label: 'Review' },
 ];
