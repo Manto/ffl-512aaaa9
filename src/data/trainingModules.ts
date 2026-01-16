@@ -51,6 +51,7 @@ export const p101Module: TrainingModule = {
       role: 'Safety Representative',
       description: 'HSE specialist responsible for ensuring all safety protocols are followed. Report any concerns directly to Brent.',
       avatar: 'BT',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
     },
     {
       id: 'mike',
@@ -58,6 +59,7 @@ export const p101Module: TrainingModule = {
       role: 'Control Room Operator',
       description: 'Controls process parameters from the control room. Coordinates lockout/tagout procedures.',
       avatar: 'MR',
+      avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
     },
     {
       id: 'rachel',
@@ -65,6 +67,7 @@ export const p101Module: TrainingModule = {
       role: 'Lead Maintenance Technician',
       description: 'Leads the hands-on maintenance work on P-101. Experienced with pump recommissioning.',
       avatar: 'RC',
+      avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
     },
     {
       id: 'ted',
@@ -72,6 +75,7 @@ export const p101Module: TrainingModule = {
       role: 'Maintenance Technician',
       description: 'Assists Rachel with mechanical work. Certified for confined space entry.',
       avatar: 'TW',
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
     },
   ],
   resources: [

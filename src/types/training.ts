@@ -4,6 +4,7 @@ export interface TeamMember {
   role: string;
   description: string;
   avatar?: string;
+  avatarUrl?: string;
 }
 
 export interface Resource {

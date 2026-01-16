@@ -1,5 +1,6 @@
-import { Users, User, ChevronLeft } from 'lucide-react';
+import { Users, ChevronLeft } from 'lucide-react';
 import { TrainingModule } from '../../types/training';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 
 interface TeamScreenProps {
   module: TrainingModule;
@@ -15,9 +16,10 @@ export function TeamScreen({ module, onNext, onPrevious }: TeamScreenProps) {
       {/* Your Role Card */}
       <div className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl shadow-lg p-6 text-primary-foreground">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-            <User className="w-6 h-6" />
-          </div>
+          <Avatar className="w-12 h-12 border-2 border-white/30">
+            <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face" alt="You" />
+            <AvatarFallback className="bg-white/20 text-primary-foreground font-semibold">YOU</AvatarFallback>
+          </Avatar>
           <div>
             <p className="text-sm opacity-80">Your Role</p>
             <h3 className="text-xl font-semibold">{userRole}</h3>
@@ -42,9 +44,12 @@ export function TeamScreen({ module, onNext, onPrevious }: TeamScreenProps) {
               key={member.id}
               className="flex items-start gap-4 p-4 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/60 to-primary flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0">
-                {member.avatar || member.name.split(' ').map(n => n[0]).join('')}
-              </div>
+              <Avatar className="w-12 h-12 flex-shrink-0">
+                <AvatarImage src={member.avatarUrl} alt={member.name} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/60 to-primary text-primary-foreground font-semibold">
+                  {member.avatar || member.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-foreground">{member.name}</h4>
                 <p className="text-sm text-primary font-medium">{member.role}</p>
