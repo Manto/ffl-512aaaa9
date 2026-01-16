@@ -31,7 +31,7 @@ export function WelcomeHero({ user }: WelcomeHeroProps) {
   });
 
   return (
-    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-6 border border-primary/10">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-sm">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="w-16 h-16 border-2 border-primary/20">
