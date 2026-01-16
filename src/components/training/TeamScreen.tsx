@@ -13,24 +13,6 @@ export function TeamScreen({ module, onNext, onPrevious }: TeamScreenProps) {
 
   return (
     <div className="space-y-6">
-      {/* Your Role Card */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl shadow-lg p-6 text-primary-foreground">
-        <div className="flex items-center gap-3 mb-4">
-          <Avatar className="w-12 h-12 border-2 border-white/30">
-            <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face" alt="You" />
-            <AvatarFallback className="bg-white/20 text-primary-foreground font-semibold">YOU</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="text-sm opacity-80">Your Role</p>
-            <h3 className="text-xl font-semibold">{userRole}</h3>
-          </div>
-        </div>
-        <p className="text-sm opacity-90">
-          As the Field Lead, you are responsible for verifying all safety conditions before authorizing work to begin. 
-          Your decisions directly impact the safety of the entire team.
-        </p>
-      </div>
-
       {/* Team Members */}
       <div className="bg-card rounded-2xl shadow-lg p-6">
         <div className="flex items-center gap-2 mb-6">
@@ -39,6 +21,27 @@ export function TeamScreen({ module, onNext, onPrevious }: TeamScreenProps) {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
+          {/* You - the learner */}
+          <div className="flex items-start gap-4 p-4 bg-primary/5 rounded-xl ring-2 ring-primary">
+            <Avatar className="w-12 h-12 flex-shrink-0">
+              <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face" alt="You" />
+              <AvatarFallback className="bg-gradient-to-br from-primary/60 to-primary text-primary-foreground font-semibold">
+                YOU
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="font-medium text-foreground">You</h4>
+                <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full font-medium">You</span>
+              </div>
+              <p className="text-sm text-primary font-medium">{userRole}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Responsible for verifying all safety conditions before authorizing work to begin.
+              </p>
+            </div>
+          </div>
+
+          {/* Other team members */}
           {team.map((member) => (
             <div
               key={member.id}
