@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { TrainingLayout } from '../components/training/TrainingLayout';
@@ -12,14 +12,28 @@ import { VideoPlayer } from '../components/training/VideoPlayer';
 import { trainingModules } from '../data/trainingModules';
 import { BriefingScreen, TrainingStep } from '../types/training';
 import { Button } from '../components/ui/button';
+import { OnboardingProvider, useOnboarding } from '../contexts/OnboardingContext';
+import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay';
 
-export default function TrainingModule() {
+function TrainingModuleContent() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<TrainingStep>('intro');
   const [briefingScreen, setBriefingScreen] = useState<BriefingScreen>('permit-resources');
+  const { hasCompletedOnboarding, startOnboarding } = useOnboarding();
 
   const module = moduleId ? trainingModules[moduleId] : null;
+
+  // Start onboarding for first-time users when on intro step
+  useEffect(() => {
+    if (!hasCompletedOnboarding && currentStep === 'intro' && module) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        startOnboarding();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasCompletedOnboarding, currentStep, module, startOnboarding]);
 
   if (!module) {
     return (
@@ -56,10 +70,7 @@ export default function TrainingModule() {
     setCurrentStep('situation');
   };
 
-  // Navigation back to briefing can be done via step click
-
   const handleStepClick = (step: TrainingStep) => {
-    // Only allow navigation to completed steps or current step
     const stepOrder: TrainingStep[] = ['intro', 'briefing', 'situation', 'simulation', 'review'];
     const currentIndex = stepOrder.indexOf(currentStep);
     const targetIndex = stepOrder.indexOf(step);
@@ -157,6 +168,15 @@ export default function TrainingModule() {
         onBack={() => navigate('/training')}
       />
       {renderContent()}
+      <OnboardingOverlay />
     </TrainingLayout>
+  );
+}
+
+export default function TrainingModule() {
+  return (
+    <OnboardingProvider>
+      <TrainingModuleContent />
+    </OnboardingProvider>
   );
 }

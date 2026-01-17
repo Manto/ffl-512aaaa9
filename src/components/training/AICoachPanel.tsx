@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, BookOpen, Users, FileText } from 'lucide-react';
+import { X, Send, Bot, BookOpen, Users, FileText, HelpCircle } from 'lucide-react';
 import { TrainingModule } from '../../types/training';
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
+import { useOnboarding } from '../../contexts/OnboardingContext';
 
 interface AICoachPanelProps {
   module: TrainingModule;
@@ -28,6 +29,7 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { resetOnboarding, startOnboarding } = useOnboarding();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -251,8 +253,30 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
     </div>
   );
 
+  const handleReplayTutorial = () => {
+    resetOnboarding();
+    startOnboarding();
+    onClose();
+  };
+
   const renderResourcesContent = () => (
     <div className="p-4 space-y-4">
+      {/* Replay Tutorial Card */}
+      <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <HelpCircle className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground text-sm">Interface Tutorial</p>
+            <p className="text-xs text-muted-foreground">Review how to navigate the training</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleReplayTutorial}>
+            Replay
+          </Button>
+        </div>
+      </div>
+
       {/* Permit Info */}
       <div className="rounded-xl border border-border p-4">
         <div className="flex items-center gap-2 mb-3">
