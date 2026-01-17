@@ -260,6 +260,7 @@ export function SimulationScreen({ module, onComplete }: SimulationScreenProps) 
         <button
           onClick={() => setIsCoachPanelOpen(true)}
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          data-onboarding="help-button"
         >
           <HelpCircle className="w-4 h-4" />
           Help

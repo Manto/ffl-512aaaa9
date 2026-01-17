@@ -19,6 +19,7 @@ export function ModuleHeader({ module, currentStep, onStepClick, onBack }: Modul
             onClick={onBack}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
             aria-label="Back to Training Library"
+            data-onboarding="back-button"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -36,7 +37,9 @@ export function ModuleHeader({ module, currentStep, onStepClick, onBack }: Modul
         <div className="flex-1" />
 
         {/* Inline stepper */}
-        <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
+        <div data-onboarding="progress-stepper">
+          <ProgressStepper currentStep={currentStep} onStepClick={onStepClick} />
+        </div>
       </div>
     </div>
   );

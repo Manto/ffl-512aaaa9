@@ -96,7 +96,7 @@ export function VideoPlayer({
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-lg overflow-hidden">
+    <div className="bg-card rounded-2xl shadow-lg overflow-hidden" data-onboarding="video-player">
       {/* Video Area */}
       <div className="relative aspect-video bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         {/* Placeholder industrial image */}
