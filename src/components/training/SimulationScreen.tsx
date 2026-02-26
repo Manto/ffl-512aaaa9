@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, HelpCircle, Play } from 'lucide-react';
+import { Send, FileText, Play } from 'lucide-react';
 import { TrainingModule, ChatMessage as ChatMessageType } from '../../types/training';
 import { ChatMessage } from './ChatMessage';
 import { AICoachPanel } from './AICoachPanel';
@@ -259,11 +259,11 @@ export function SimulationScreen({ module, onComplete }: SimulationScreenProps) 
         {/* Right: Help Button */}
         <button
           onClick={() => setIsCoachPanelOpen(true)}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full border border-border hover:bg-muted"
           data-onboarding="help-button"
         >
-          <HelpCircle className="w-4 h-4" />
-          Help
+          <FileText className="w-4 h-4" />
+          Resources
         </button>
       </div>
 

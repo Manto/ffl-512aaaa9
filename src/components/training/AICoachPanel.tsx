@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, BookOpen, Users, FileText, HelpCircle } from 'lucide-react';
+import { X, Send, Bot, Users, FileText, HelpCircle } from 'lucide-react';
 import { TrainingModule } from '../../types/training';
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
@@ -261,6 +261,12 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
 
   const renderResourcesContent = () => (
     <div className="p-4 space-y-4">
+      {/* Scenario Brief */}
+      <div className="rounded-xl border border-border p-4">
+        <p className="font-medium text-foreground text-sm">Scenario Brief</p>
+        <p className="text-xs text-muted-foreground mt-0.5">View scenario overview</p>
+      </div>
+
       {/* Replay Tutorial Card */}
       <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
         <div className="flex items-center gap-3">
@@ -277,52 +283,24 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
         </div>
       </div>
 
-      {/* Permit Info */}
-      <div className="rounded-xl border border-border p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <BookOpen className="w-4 h-4 text-primary" />
-          <h4 className="font-medium text-foreground text-sm">Permit Details</h4>
-        </div>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Permit #:</span>
-            <span className="text-foreground font-medium">{module.permit?.permitNumber || 'PTW-2024-0892'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Status:</span>
-            <span className="text-green-600 font-medium">{module.permit?.status || 'Active'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Valid Until:</span>
-            <span className="text-foreground">{module.permit?.validUntil || '18:00 Today'}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Resources List */}
+      {/* Available Resources */}
       <div className="space-y-2">
         <h4 className="font-medium text-foreground text-sm px-1">Available Resources</h4>
         {module.resources?.map((resource, index) => (
-          <div key={index} className="rounded-xl border border-border p-3">
+          <div key={index} className="rounded-xl border border-border p-4">
             <p className="font-medium text-foreground text-sm">{resource.title}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{resource.description}</p>
+            <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
           </div>
-        )) || (
-          <>
-            <div className="rounded-xl border border-border p-3">
-              <p className="font-medium text-foreground text-sm">P&ID Diagram</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Piping and instrumentation diagram for P-101</p>
-            </div>
-            <div className="rounded-xl border border-border p-3">
-              <p className="font-medium text-foreground text-sm">Safety Data Sheet</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Isobutane handling and safety information</p>
-            </div>
-            <div className="rounded-xl border border-border p-3">
-              <p className="font-medium text-foreground text-sm">Work Procedure</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Standard operating procedure for pump maintenance</p>
-            </div>
-          </>
-        )}
+        ))}
+        {/* Additional resources matching screenshot */}
+        <div className="rounded-xl border border-border p-4">
+          <p className="font-medium text-foreground text-sm">Start Work Check (SWC) Form</p>
+          <p className="text-xs text-muted-foreground mt-1">Mandatory checklist for verifying safety requirements before starting work</p>
+        </div>
+        <div className="rounded-xl border border-border p-4">
+          <p className="font-medium text-foreground text-sm">Isolation List - P-101</p>
+          <p className="text-xs text-muted-foreground mt-1">Complete list of all isolation points, locks, and tags for P-101 pump</p>
+        </div>
       </div>
     </div>
   );
@@ -360,7 +338,7 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
       >
         {/* Header */}
         <div className="px-4 py-3 border-b border-border flex items-center justify-between shrink-0">
-          <h2 className="font-semibold text-foreground">Help</h2>
+          <h2 className="font-semibold text-foreground">Resources</h2>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg hover:bg-muted transition-colors"
