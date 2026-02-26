@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, Users, FileText, HelpCircle } from 'lucide-react';
-import { TrainingModule } from '../../types/training';
+import { X, Send, Bot, Users, FileText, HelpCircle, Check } from 'lucide-react';
+import { TrainingModule, Resource, ChecklistItem } from '../../types/training';
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
 import { useOnboarding } from '../../contexts/OnboardingContext';
+import { ResourceSignOffModal } from './ResourceSignOffModal';
 
 interface AICoachPanelProps {
   module: TrainingModule;
@@ -27,6 +28,8 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [resources, setResources] = useState<Resource[]>(module.resources);
+  const [openResource, setOpenResource] = useState<Resource | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { resetOnboarding, startOnboarding } = useOnboarding();
@@ -259,6 +262,58 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
     onClose();
   };
 
+  const handleUpdateChecklist = (resourceId: string, checklist: ChecklistItem[]) => {
+    setResources(prev => prev.map(r => r.id === resourceId ? { ...r, checklist } : r));
+  };
+
+  const getResourceStatus = (resource: Resource) => {
+    if (!resource.checklist || resource.checklist.length === 0) return null;
+    const completed = resource.checklist.filter(i => i.completed).length;
+    const total = resource.checklist.length;
+    return { completed, total, progress: completed / total };
+  };
+
+  const renderResourceCard = (resource: Resource) => {
+    const status = getResourceStatus(resource);
+    const allComplete = status && status.completed === status.total;
+
+    return (
+      <button
+        key={resource.id}
+        onClick={() => setOpenResource(resource)}
+        className="w-full rounded-xl border border-border p-4 text-left hover:border-primary/30 hover:bg-muted/30 transition-all"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-foreground text-sm">{resource.title}</p>
+            {resource.description && (
+              <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
+            )}
+          </div>
+          {allComplete && (
+            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center shrink-0 mt-0.5">
+              <Check className="w-3 h-3 text-primary-foreground" />
+            </div>
+          )}
+        </div>
+        {status && !allComplete && (
+          <div className="mt-3 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">{status.completed}/{status.total} signed off</span>
+              <span className="text-xs font-medium text-primary">{Math.round(status.progress * 100)}%</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-500"
+                style={{ width: `${status.progress * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+      </button>
+    );
+  };
+
   const renderResourcesContent = () => (
     <div className="p-4 space-y-4">
       {/* Scenario Brief */}
@@ -286,21 +341,7 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
       {/* Available Resources */}
       <div className="space-y-2">
         <h4 className="font-medium text-foreground text-sm px-1">Available Resources</h4>
-        {module.resources?.map((resource, index) => (
-          <div key={index} className="rounded-xl border border-border p-4">
-            <p className="font-medium text-foreground text-sm">{resource.title}</p>
-            <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
-          </div>
-        ))}
-        {/* Additional resources matching screenshot */}
-        <div className="rounded-xl border border-border p-4">
-          <p className="font-medium text-foreground text-sm">Start Work Check (SWC) Form</p>
-          <p className="text-xs text-muted-foreground mt-1">Mandatory checklist for verifying safety requirements before starting work</p>
-        </div>
-        <div className="rounded-xl border border-border p-4">
-          <p className="font-medium text-foreground text-sm">Isolation List - P-101</p>
-          <p className="text-xs text-muted-foreground mt-1">Complete list of all isolation points, locks, and tags for P-101 pump</p>
-        </div>
+        {resources.map(resource => renderResourceCard(resource))}
       </div>
     </div>
   );
@@ -372,6 +413,16 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
           {renderContent()}
         </div>
       </div>
+
+      {/* Sign-off Modal */}
+      {openResource && (
+        <ResourceSignOffModal
+          resource={openResource}
+          isOpen={!!openResource}
+          onClose={() => setOpenResource(null)}
+          onUpdateChecklist={handleUpdateChecklist}
+        />
+      )}
     </>
   );
 }

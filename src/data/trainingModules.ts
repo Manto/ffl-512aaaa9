@@ -97,6 +97,27 @@ export const p101Module: TrainingModule = {
       type: 'procedure',
       description: 'Step-by-step work instructions',
     },
+    {
+      id: 'swc',
+      title: 'Start Work Checklist',
+      type: 'checklist',
+      description: 'Mandatory checklist for verifying safety requirements before starting work',
+      checklist: [
+        { id: 'swc-1', label: 'Permit to Work reviewed and understood by all team members', completed: false },
+        { id: 'swc-2', label: 'All isolation points verified and locked out', completed: false },
+        { id: 'swc-3', label: 'Zero energy verification confirmed', completed: false },
+        { id: 'swc-4', label: 'LEL monitoring equipment calibrated and operational', completed: false },
+        { id: 'swc-5', label: 'PPE requirements verified for all personnel', completed: false },
+        { id: 'swc-6', label: 'Emergency evacuation routes communicated to team', completed: false },
+        { id: 'swc-7', label: 'Communication channels tested and confirmed', completed: false },
+      ],
+    },
+    {
+      id: 'isolation',
+      title: 'Isolation List - P-101',
+      type: 'other',
+      description: 'Complete list of all isolation points, locks, and tags for P-101 pump',
+    },
   ],
 };
 

@@ -7,11 +7,18 @@ export interface TeamMember {
   avatarUrl?: string;
 }
 
+export interface ChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+}
+
 export interface Resource {
   id: string;
   title: string;
-  type: 'permit' | 'jsa' | 'procedure' | 'other';
+  type: 'permit' | 'jsa' | 'procedure' | 'checklist' | 'other';
   description?: string;
+  checklist?: ChecklistItem[];
 }
 
 export interface SafetyRequirement {
