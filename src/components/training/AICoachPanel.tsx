@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, Users, FileText, HelpCircle } from 'lucide-react';
+import { X, Send, Bot, Users, FileText, HelpCircle, Circle, CheckCircle2, Clock } from 'lucide-react';
 import { TrainingModule } from '../../types/training';
 import { Button } from '../ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
@@ -19,14 +19,33 @@ interface CoachMessage {
 }
 
 type TabId = 'coach' | 'team' | 'resources';
+type ResourceStatus = 'not-started' | 'in-progress' | 'completed';
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/training-coach`;
+
+function ResourceStatusIcon({ status }: { status: ResourceStatus }) {
+  switch (status) {
+    case 'completed':
+      return <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--status-completed))' }} />;
+    case 'in-progress':
+      return <Clock className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--status-in-progress))' }} />;
+    default:
+      return <Circle className="w-4 h-4 text-muted-foreground/40 shrink-0" />;
+  }
+}
 
 export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachPanelProps) {
   const [activeTab, setActiveTab] = useState<TabId>('coach');
   const [messages, setMessages] = useState<CoachMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [resourceStatuses] = useState<Record<string, ResourceStatus>>({
+    'ptw': 'completed',
+    'jsa': 'completed',
+    'procedure': 'not-started',
+    'swc': 'in-progress',
+    'isolation': 'not-started',
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { resetOnboarding, startOnboarding } = useOnboarding();
@@ -286,20 +305,29 @@ export function AICoachPanel({ module, currentPhase, isOpen, onClose }: AICoachP
       {/* Available Resources */}
       <div className="space-y-2">
         <h4 className="font-medium text-foreground text-sm px-1">Available Resources</h4>
-        {module.resources?.map((resource, index) => (
-          <div key={index} className="rounded-xl border border-border p-4">
-            <p className="font-medium text-foreground text-sm">{resource.title}</p>
-            <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
+        {module.resources?.map((resource) => (
+          <div key={resource.id} className="rounded-xl border border-border p-4 flex items-start gap-3">
+            <ResourceStatusIcon status={resourceStatuses[resource.id] || 'not-started'} />
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-foreground text-sm">{resource.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">{resource.description}</p>
+            </div>
           </div>
         ))}
-        {/* Additional resources matching screenshot */}
-        <div className="rounded-xl border border-border p-4">
-          <p className="font-medium text-foreground text-sm">Start Work Check (SWC) Form</p>
-          <p className="text-xs text-muted-foreground mt-1">Mandatory checklist for verifying safety requirements before starting work</p>
+        {/* Additional resources */}
+        <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+          <ResourceStatusIcon status={resourceStatuses['swc'] || 'not-started'} />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-foreground text-sm">Start Work Check (SWC) Form</p>
+            <p className="text-xs text-muted-foreground mt-1">Mandatory checklist for verifying safety requirements before starting work</p>
+          </div>
         </div>
-        <div className="rounded-xl border border-border p-4">
-          <p className="font-medium text-foreground text-sm">Isolation List - P-101</p>
-          <p className="text-xs text-muted-foreground mt-1">Complete list of all isolation points, locks, and tags for P-101 pump</p>
+        <div className="rounded-xl border border-border p-4 flex items-start gap-3">
+          <ResourceStatusIcon status={resourceStatuses['isolation'] || 'not-started'} />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-foreground text-sm">Isolation List - P-101</p>
+            <p className="text-xs text-muted-foreground mt-1">Complete list of all isolation points, locks, and tags for P-101 pump</p>
+          </div>
         </div>
       </div>
     </div>
